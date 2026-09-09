@@ -7,10 +7,9 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
-    height: 100dvh;
+    min-height: 100dvh;
     color: #fff;
     font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
-    overflow: hidden;
     user-select: none;
   }
   body {
@@ -23,8 +22,7 @@
     max-width: 720px;
     margin: 0 auto;
     position: relative;
-    height: 100dvh;
-    max-height: 100dvh;
+    min-height: 100dvh;
   }
   body::before {
     content: '';
@@ -181,12 +179,11 @@
       0 10px 24px rgba(0,0,0,0.55),
       inset 0 0 30px rgba(0,0,0,0.5);
     margin-top: 2px;
-    flex: 1 1 auto;
-    min-height: 0;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     max-width: 560px;
-    width: auto;
+    width: 100%;
   }
   .cabinet::after {
     content: '';
@@ -272,10 +269,7 @@
     touch-action: none;
     width: 100%;
     height: auto;
-    max-height: 100%;
     aspect-ratio: 380 / 760;
-    min-height: 0;
-    object-fit: contain;
     align-self: center;
   }
   .slots-row {
