@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Pinball 22,000</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100dvh;
+    color: #fff;
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+  body {
+    background:
+      radial-gradient(ellipse 90% 65% at 50% 55%, #7a1024 0%, #45081a 30%, #1e0410 60%, #0a020a 90%),
+      #0a020a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+  body::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 10% 55%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,0.5), transparent);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  .title-bar {
+    align-self: stretch;
+    background: #000;
+    color: #b8b8b8;
+    padding: 6px 14px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .title-bar .rtp {
+    font-size: 11px;
+    color: #a0a0a0;
+    letter-spacing: 0.5px;
+  }
+  .title-bar .rtp b { color: #f2c94c; font-weight: 700; }
+  .audio-toggles { display: flex; gap: 6px; }
+  .mute-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #d0d0d0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px;
+  }
+  .mute-btn:hover { color: #f2c94c; border-color: rgba(242, 201, 76, 0.4); }
+  .mute-btn.off { color: #555; border-color: rgba(255,255,255,0.06); }
+  .mute-btn.off .dot { background: #555; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #4bcb4b; box-shadow: 0 0 4px currentColor; color: #4bcb4b; }
+  .logo {
+    text-align: center;
+    padding: 12px 0 4px;
+    z-index: 2;
+    position: relative;
+  }
+  .logo h1 {
+    font-size: clamp(30px, 10vw, 44px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 0.95;
+    background: linear-gradient(180deg,
+      #fff6c0 0%, #ffd75a 22%, #f2a71c 46%, #7a4600 54%, #f2c94c 72%, #fff2a0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1.3px #3a2000;
+    filter:
+      drop-shadow(0 2px 0 #2a1500)
+      drop-shadow(0 3px 3px rgba(0,0,0,0.65))
+      drop-shadow(0 0 14px rgba(242, 201, 76, 0.7));
+  }
+  .logo h1 .accent {
+    background: linear-gradient(180deg,
+      #ffe680 0%, #ffb838 30%, #a06a10 55%, #6a4200 65%, #f2c94c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1.3px #2a1500;
+  }
+  .logo h2 {
+    margin-top: 2px;
+    font-size: clamp(16px, 5vw, 24px);
+    font-weight: 900;
+    letter-spacing: 8px;
+    background: linear-gradient(180deg,
+      #fff2a0 0%, #f7d34a 28%, #b8781a 55%, #6a4200 65%, #f2c94c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1px #3a2000;
+    filter:
+      drop-shadow(0 2px 0 #2a1500)
+      drop-shadow(0 3px 3px rgba(0,0,0,0.55))
+      drop-shadow(0 0 12px rgba(242, 201, 76, 0.55));
+  }
+  .history {
+    display: flex;
+    gap: 5px;
+    padding: 2px 10px 6px;
+    overflow: hidden;
+    max-width: 400px;
+    width: 100%;
+    align-self: center;
+    justify-content: center;
+    z-index: 2;
+    flex: 0 0 auto;
+  }
+  .history-chip {
+    padding: 4px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    letter-spacing: 0.3px;
+    border: 1px solid transparent;
+    background: rgba(0,0,0,0.35);
+  }
+  .history-chip.win     { color: #cfffb0; border-color: rgba(95, 208, 95, 0.6); background: rgba(30, 90, 30, 0.55); }
+  .history-chip.jackpot { color: #fff2c0; border-color: rgba(242, 201, 76, 0.8); background: rgba(140, 100, 20, 0.65); box-shadow: 0 0 6px rgba(242,201,76,0.35); }
+  .history-chip.bust    { color: #ffc0c0; border-color: rgba(214, 48, 48, 0.6); background: rgba(120, 20, 20, 0.55); }
+  .history-chip.current {
+    color: #fff8dc;
+    background: rgba(140, 100, 20, 0.25);
+    border-color: rgba(242, 201, 76, 0.85);
+    animation: currentPulse 1.2s ease-in-out infinite;
+    min-width: 54px;
+  }
+  @keyframes currentPulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(242, 201, 76, 0.35); }
+    50%      { box-shadow: 0 0 16px rgba(242, 201, 76, 0.75); }
+  }
+  .history-chip.enter { animation: chipIn 0.35s ease; }
+  @keyframes chipIn {
+    from { transform: scale(0.4); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .cabinet {
+    position: relative;
+    z-index: 2;
+    padding: 8px 8px 5px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #0a0308 0%, #14060b 60%, #0a0308 100%);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    box-shadow:
+      0 0 0 2px #c99a3a,
+      0 0 0 3px #6a4a10,
+      0 0 22px rgba(201, 154, 58, 0.35),
+      0 10px 24px rgba(0,0,0,0.55),
+      inset 0 0 30px rgba(0,0,0,0.5);
+    margin-top: 2px;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    max-width: 560px;
+    width: auto;
+  }
+  .cabinet::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -14px;
+    transform: translateX(-50%);
+    width: 62%;
+    height: 18px;
+    background: linear-gradient(180deg, #0a0308 0%, #14060b 100%);
+    border: 2px solid #c99a3a;
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+  }
+  .cabinet-jackpot {
+    height: 52px;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    background: radial-gradient(ellipse at center, #1c0e0e 0%, #0a0303 100%);
+    border: 1.5px solid #c99a3a;
+    box-shadow: inset 0 0 12px rgba(201, 154, 58, 0.2);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .streak-badge {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%) scale(0.4);
+    opacity: 0;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: #ffd0d0;
+    background: rgba(120, 20, 20, 0.7);
+    border: 1px solid #d63030;
+    transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+    pointer-events: none;
+  }
+  .streak-badge.on { opacity: 1; transform: translateY(-50%) scale(1); }
+  .streak-badge.hot {
+    color: #ffe066;
+    background: linear-gradient(180deg, #f2c94c, #a06a10);
+    border-color: #fff2c0;
+    box-shadow: 0 0 12px rgba(242, 201, 76, 0.6);
+    animation: streakPulse 0.5s ease-in-out infinite;
+  }
+  .streak-badge.blaze {
+    background: linear-gradient(180deg, #ff8080, #b31017);
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255, 60, 60, 0.9);
+    animation: streakPulse 0.35s ease-in-out infinite;
+  }
+  @keyframes streakPulse {
+    0%,100% { transform: translateY(-50%) scale(1); }
+    50%     { transform: translateY(-50%) scale(1.18); }
+  }
+  .multi-value {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, #ffe680 0%, #f2c94c 50%, #a86e10 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 0.8px #4a2c00;
+    filter: drop-shadow(0 2px 0 #2a1500) drop-shadow(0 0 8px rgba(242, 201, 76, 0.5));
+    transition: transform 0.15s ease;
+  }
+  .multi-value.pulse { transform: scale(1.15); }
+  #board {
+    display: block;
+    border-radius: 12px;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 50%, #1a080e 0%, #0d0308 100%);
+    box-shadow:
+      inset 0 0 40px rgba(0,0,0,0.6),
+      0 0 0 1.5px rgba(201, 154, 58, 0.55);
+    touch-action: none;
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    aspect-ratio: 380 / 760;
+    min-height: 0;
+    object-fit: contain;
+    align-self: center;
+  }
+  .slots-row {
+    display: flex;
+    width: 100%;
+    padding: 8px 2px 2px;
+    gap: 3px;
+  }
+  .slot-chip {
+    text-align: center;
+    padding: 6px 2px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .slot-chip.hit { transform: translateY(-2px) scale(1.08); }
+  .slot-collect {
+    background: linear-gradient(180deg, #3a8f3a, #1a5a1a);
+    color: #eaffca;
+    border-color: #5fd05f;
+    box-shadow: 0 0 8px rgba(95, 208, 95, 0.3);
+  }
+  .slot-collect.hit { box-shadow: 0 0 20px #7ff07f; }
+  .slot-bust {
+    background: linear-gradient(180deg, #8f1a1a, #500606);
+    color: #ffc0c0;
+    border-color: #d63030;
+    box-shadow: 0 0 8px rgba(214, 48, 48, 0.3);
+  }
+  .slot-bust.hit { box-shadow: 0 0 20px #ff4040; }
+  .slot-jackpot {
+    background: linear-gradient(180deg, #f2c94c, #8a5a0a);
+    color: #4a2a00;
+    border-color: #ffe082;
+    box-shadow: 0 0 10px rgba(242, 201, 76, 0.5);
+  }
+  .slot-jackpot.hit { box-shadow: 0 0 26px #ffde6b; }
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 560px;
+    padding: 8px 12px 6px;
+    z-index: 2;
+    flex: 0 0 auto;
+  }
+  .ctrl-btn {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #2c2c2c 0%, #0a0a0a 60%, #000 100%);
+    border: none;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow:
+      inset 0 -3px 6px rgba(0,0,0,0.6),
+      inset 0 2px 3px rgba(255,255,255,0.06),
+      0 4px 10px rgba(0,0,0,0.55);
+  }
+  .ctrl-btn:active { transform: scale(0.94); }
+  .launch-btn {
+    width: 74px; height: 74px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 26%, #a7e79e 0%, #6cc85f 22%, #4bb03e 50%, #2f882a 80%, #1e5f1a 100%);
+    border: none;
+    box-shadow:
+      inset 0 -6px 12px rgba(0,0,0,0.35),
+      inset 0 3px 6px rgba(255,255,255,0.35),
+      inset 0 0 0 2px rgba(255,255,255,0.05),
+      0 6px 18px rgba(50, 170, 50, 0.35),
+      0 4px 10px rgba(0,0,0,0.55);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    padding: 0;
+  }
+  .launch-btn svg {
+    width: 38px; height: 38px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+  }
+  .launch-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: grayscale(0.35);
+  }
+  .launch-btn:active:not(:disabled) { transform: scale(0.96); }
+  .stats-row {
+    display: flex;
+    align-self: stretch;
+    background: linear-gradient(180deg, #c02020 0%, #7a0a0e 55%, #4a0606 100%);
+    padding: 8px 8px;
+    gap: 6px;
+    z-index: 2;
+    box-shadow: 0 -6px 18px rgba(0,0,0,0.35);
+    flex: 0 0 auto;
+  }
+  .stat {
+    flex: 1;
+    background: rgba(0,0,0,0.55);
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+  }
+  .stat-inner { display: flex; flex-direction: column; line-height: 1.15; }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 0.2px; font-weight: 500; }
+  .stat-value { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: 0.3px; }
+  .stat-icon { color: rgba(255,255,255,0.35); font-size: 15px; }
+  .toast {
+    position: fixed;
+    top: 24%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.6);
+    background: linear-gradient(180deg, #f2c94c, #a06a10);
+    color: #2a1500;
+    padding: 14px 26px;
+    border-radius: 14px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    box-shadow: 0 0 40px rgba(242, 201, 76, 0.6), inset 0 -3px 8px rgba(0,0,0,0.2);
+    font-size: 20px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
+  .cheat-panel {
+    position: fixed;
+    top: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #1a0a10 0%, #0a0308 100%);
+    border: 1.5px solid #c99a3a;
+    border-radius: 12px;
+    padding: 14px 16px;
+    z-index: 20;
+    display: none;
+    color: #fff;
+    font-size: 12px;
+    width: min(320px, calc(100% - 24px));
+    box-shadow: 0 0 30px rgba(0,0,0,0.75), 0 0 20px rgba(201,154,58,0.3);
+  }
+  .cheat-panel.open { display: block; }
+  .cheat-panel h3 {
+    color: #f2c94c;
+    font-size: 12px;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    font-weight: 900;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cheat-panel h3 .x {
+    color: #999; cursor: pointer; font-weight: 400; font-size: 16px;
+    padding: 0 6px;
+  }
+  .cheat-panel label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: #ffcaca;
+    text-transform: uppercase;
+  }
+  .cheat-panel input, .cheat-panel select {
+    width: 100%;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(201,154,58,0.35);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 4px;
+    font-family: inherit;
+    font-weight: 700;
+  }
+  .cheat-panel input:focus, .cheat-panel select:focus {
+    outline: none;
+    border-color: #f2c94c;
+  }
+  .cheat-panel .row { display: flex; gap: 8px; margin-top: 8px; }
+  .cheat-panel button {
+    flex: 1;
+    padding: 9px;
+    background: linear-gradient(180deg, #f2c94c, #a06a10);
+    color: #2a1500;
+    border: 1px solid #6a4a10;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .cheat-panel button.clear {
+    background: linear-gradient(180deg, #4a1a1a, #2a0a0a);
+    color: #ffb0b0;
+    border-color: #6a2020;
+  }
+  .cheat-status {
+    color: #f2c94c;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    min-height: 14px;
+    text-align: center;
+  }
+  .menu-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(201, 154, 58, 0.12);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #ffcaca;
+    text-transform: uppercase;
+  }
+  .menu-row:last-child { border-bottom: none; }
+  .menu-row .mute-btn { min-width: 68px; justify-content: center; }
+  .cheat-quick { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+  .cheat-quick button {
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    font-size: 10px;
+    background: rgba(201,154,58,0.15);
+    color: #f2c94c;
+    border: 1px solid rgba(201,154,58,0.35);
+  }
+  .simFilter {
+    flex: 1;
+    padding: 5px 4px;
+    font-size: 10px;
+    background: rgba(201,154,58,0.12);
+    color: #ffcaca;
+    border: 1px solid rgba(201,154,58,0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .simFilter.active { background: rgba(242,201,76,0.35); color: #2a1500; border-color: #f2c94c; }
+  #simList {
+    max-height: 240px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(201,154,58,0.2);
+    border-radius: 6px;
+    padding: 4px;
+  }
+  .simRow {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-bottom: 2px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  .simRow:hover { background: rgba(242,201,76,0.15); }
+  .simRow.bust    { color: #ffb0b0; border-left: 3px solid #d63030; }
+  .simRow.win     { color: #cfffb0; border-left: 3px solid #5fd05f; }
+  .simRow.jackpot { color: #fff2c0; border-left: 3px solid #f2c94c; background: rgba(140,100,20,0.15); }
+  .simRow .seed { opacity: 0.6; font-size: 10px; }
+  .simRow .val { font-weight: 800; }
+  .toast.bust { background: linear-gradient(180deg, #8a1a1a, #500606); color: #fff; }
+  .toast small { display: block; font-size: 12px; font-weight: 700; letter-spacing: 2px; margin-bottom: 4px; opacity: 0.8; }
+</style>
+</head>
+<body>
+<span id="rtpVal" hidden></span><span id="rtpN" hidden></span>
+
+<div class="cheat-panel" id="menuPanel">
+  <h3>SETTINGS <span class="x" id="menuCloseX">✕</span></h3>
+  <div class="menu-row">
+    <span>SOUND EFFECTS</span>
+    <button class="mute-btn" id="sfxBtn" title="Toggle sound effects"><span class="dot"></span>SFX</button>
+  </div>
+  <div class="menu-row">
+    <span>MUSIC</span>
+    <button class="mute-btn" id="musicBtn" title="Toggle music"><span class="dot"></span>MUSIC</button>
+  </div>
+  <div class="menu-row">
+    <span>GAME SPEED</span>
+    <button class="mute-btn" id="speedBtn" title="Cycle game speed">2×</button>
+  </div>
+  <div class="menu-row">
+    <span>FORCE OUTCOME</span>
+    <button class="mute-btn" id="devBtn" title="Force outcome (dev)">DEV</button>
+  </div>
+</div>
+
+<div class="cheat-panel" id="cheatPanel">
+  <h3>FORCE OUTCOME <span class="x" id="cheatCloseX">✕</span></h3>
+  <label>Outcome type
+    <select id="cheatType">
+      <option value="win">×1 WIN</option>
+      <option value="jackpot">JACKPOT ×10</option>
+      <option value="bust">BUST</option>
+    </select>
+  </label>
+  <label>Displayed multiplier
+    <input type="number" id="cheatValue" value="5.00" step="0.01" min="0">
+    <div class="cheat-quick">
+      <button data-v="0.12">0.12×</button>
+      <button data-v="1.98">1.98×</button>
+      <button data-v="12.5">12.5×</button>
+      <button data-v="150">150×</button>
+      <button data-v="1211.11">1211.11×</button>
+    </div>
+  </label>
+  <div class="row">
+    <button id="cheatApply">Arm next round</button>
+    <button class="clear" id="cheatClear">Clear</button>
+  </div>
+  <div class="cheat-status" id="cheatStatus">not armed</div>
+
+  <hr style="border:0; border-top:1px solid rgba(201,154,58,0.25); margin: 14px 0 10px;">
+
+  <label>Seed (deterministic replay)
+    <input type="text" id="seedInput" placeholder="e.g. 1234567890">
+  </label>
+  <div class="row">
+    <button id="armSeed">Arm seed</button>
+    <button class="clear" id="clearSeed">Clear seed</button>
+  </div>
+  <div class="row">
+    <button class="simRunBtn" data-n="1000">Simulate 1k</button>
+    <button class="simRunBtn" data-n="10000">10k</button>
+    <button class="simRunBtn" data-n="100000">100k</button>
+  </div>
+  <div class="cheat-status" id="seedStatus"></div>
+
+  <div id="simResults" style="display:none; margin-top:8px;">
+    <div style="display:flex; gap:4px; margin-bottom:6px;">
+      <button class="simFilter" data-filter="all">All</button>
+      <button class="simFilter" data-filter="bust">Bust</button>
+      <button class="simFilter" data-filter="win">Win</button>
+      <button class="simFilter" data-filter="jackpot">JP</button>
+      <button class="simFilter" data-filter="top">Top</button>
+    </div>
+    <div id="simList"></div>
+    <div id="simSummary" class="cheat-status"></div>
+  </div>
+</div>
+
+<div class="history" id="history" hidden></div>
+
+<div class="cabinet">
+  <div class="cabinet-jackpot">
+    <div class="multi-value" id="multiValue">0.00×</div>
+  </div>
+  <canvas id="board" width="380" height="760"></canvas>
+  <div class="slots-row" id="slotsRow"></div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn" id="menuBtn" title="Menu">☰</button>
+  <button class="ctrl-btn" id="betDown" title="Bet down">−</button>
+  <button class="launch-btn" id="launchBtn" title="Launch">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4v6h6"/>
+      <path d="M20 20v-6h-6"/>
+      <path d="M4 10a9 9 0 0 1 15-3.5"/>
+      <path d="M20 14a9 9 0 0 1-15 3.5"/>
+    </svg>
+  </button>
+  <button class="ctrl-btn" id="betUp" title="Bet up">+</button>
+  <button class="ctrl-btn" title="Auto">↻</button>
+</div>
+
+<div class="stats-row">
+  <div class="stat">
+    <div class="stat-inner"><span class="stat-label">Balance</span><span class="stat-value" id="balance">$500.00</span></div>
+    <span class="stat-icon">◧</span>
+  </div>
+  <div class="stat">
+    <div class="stat-inner"><span class="stat-label">Bet Amount</span><span class="stat-value" id="bet">$5.00</span></div>
+    <span class="stat-icon">◉</span>
+  </div>
+  <div class="stat">
+    <div class="stat-inner"><span class="stat-label">Win</span><span class="stat-value" id="win">$0.00</span></div>
+    <span class="stat-icon">✦</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('board');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // ----- Audio: Web Audio synth, no files. SFX and Music on separate buses. -----
+  let audioCtx = null;
+  let sfxGain = null;
+  let musicGain = null;
+  let sfxOff = false;
+  let musicOff = false;
+  function ensureAudio() {
+    if (audioCtx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    audioCtx = new AC();
+    sfxGain = audioCtx.createGain();
+    musicGain = audioCtx.createGain();
+    sfxGain.gain.value = sfxOff ? 0 : 0.6;
+    musicGain.gain.value = musicOff ? 0 : 0.6;
+    sfxGain.connect(audioCtx.destination);
+    musicGain.connect(audioCtx.destination);
+  }
+  function playTone({ freq, freqEnd, type = 'sine', dur = 0.1, vol = 0.15, delay = 0, bus = 'sfx' }) {
+    if (!audioCtx) return;
+    const target = bus === 'music' ? musicGain : sfxGain;
+    if (bus === 'sfx' && sfxOff) return;
+    if (bus === 'music' && musicOff) return;
+    const t = audioCtx.currentTime + delay;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    if (freqEnd != null) osc.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    osc.connect(g).connect(target);
+    osc.start(t);
+    osc.stop(t + dur + 0.02);
+  }
+  function playNoise(dur = 0.08, vol = 0.1) {
+    if (!audioCtx || sfxOff) return;
+    const t = audioCtx.currentTime;
+    const bufSize = Math.floor(audioCtx.sampleRate * dur);
+    const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    src.connect(g).connect(sfxGain);
+    src.start(t);
+  }
+  function playPeg() {
+    const f = 1000 + Math.random() * 700;
+    playTone({ freq: f, freqEnd: f * 0.5, type: 'sine', dur: 0.06, vol: 0.09 });
+  }
+  function playBumper() {
+    playTone({ freq: 380, freqEnd: 90, type: 'square', dur: 0.12, vol: 0.14 });
+    playNoise(0.05, 0.06);
+  }
+  function playSling() {
+    playTone({ freq: 180, freqEnd: 900, type: 'sawtooth', dur: 0.12, vol: 0.12 });
+    playTone({ freq: 400, freqEnd: 1600, type: 'triangle', dur: 0.14, vol: 0.08, delay: 0.01 });
+  }
+  function playWin() {
+    [523, 659, 784].forEach((f, i) =>
+      playTone({ freq: f, type: 'triangle', dur: 0.28, vol: 0.14, delay: i * 0.09 }));
+  }
+  function playJackpot() {
+    [523, 659, 784, 1047, 1319].forEach((f, i) =>
+      playTone({ freq: f, type: 'triangle', dur: 0.42, vol: 0.16, delay: i * 0.08 }));
+    [261, 392].forEach((f, i) =>
+      playTone({ freq: f, type: 'sine', dur: 0.7, vol: 0.1, delay: i * 0.08 }));
+  }
+  function playBust() {
+    playTone({ freq: 300, freqEnd: 60, type: 'sawtooth', dur: 0.5, vol: 0.15 });
+    playNoise(0.25, 0.05);
+  }
+
+  // Background music: slow arpeggio in Cmin (moody casino vibe)
+  const musicNotes = [
+    130.81, 196.00, 261.63, 311.13, // C3 G3 C4 Eb4
+    196.00, 261.63, 311.13, 392.00, // G3 C4 Eb4 G4
+  ];
+  let musicIdx = 0;
+  let musicTimer = null;
+  function playMusicNote() {
+    if (!audioCtx || musicOff) return;
+    const f = musicNotes[musicIdx];
+    musicIdx = (musicIdx + 1) % musicNotes.length;
+    playTone({ freq: f, type: 'triangle', dur: 0.9, vol: 0.035, bus: 'music' });
+    if (musicIdx % 4 === 0) {
+      playTone({ freq: f * 4, type: 'sine', dur: 0.6, vol: 0.02, delay: 0.05, bus: 'music' });
+    }
+  }
+  function startMusic() {
+    if (musicTimer) return;
+    musicTimer = setInterval(playMusicNote, 420);
+  }
+  function stopMusic() {
+    if (!musicTimer) return;
+    clearInterval(musicTimer);
+    musicTimer = null;
+  }
+
+  const sfxBtn = document.getElementById('sfxBtn');
+  const musicBtn = document.getElementById('musicBtn');
+  function setSfxOff(off) {
+    sfxOff = off;
+    if (sfxGain) sfxGain.gain.value = off ? 0 : 0.6;
+    sfxBtn.classList.toggle('off', off);
+  }
+  function setMusicOff(off) {
+    musicOff = off;
+    if (musicGain) musicGain.gain.value = off ? 0 : 0.6;
+    musicBtn.classList.toggle('off', off);
+    if (off) stopMusic(); else startMusic();
+  }
+  sfxBtn.addEventListener('click', () => {
+    ensureAudio();
+    setSfxOff(!sfxOff);
+  });
+  musicBtn.addEventListener('click', () => {
+    ensureAudio();
+    setMusicOff(!musicOff);
+  });
+
+  // Game speed cycler (persisted). Speed multiplies physics iterations per frame.
+  const SPEED_OPTIONS = [0.5, 1, 2, 4];
+  const speedBtn = document.getElementById('speedBtn');
+  let speedMult = 2;
+  const savedSpeed = parseFloat(localStorage.getItem('pinballSpeed'));
+  if (SPEED_OPTIONS.includes(savedSpeed)) speedMult = savedSpeed;
+  function fmtSpeed(v) { return (v < 1 ? v.toFixed(1) : String(v)) + '×'; }
+  function setSpeed(v) {
+    speedMult = v;
+    speedBtn.textContent = fmtSpeed(v);
+    speedBtn.classList.toggle('off', v < 1);
+    localStorage.setItem('pinballSpeed', String(v));
+  }
+  setSpeed(speedMult);
+  speedBtn.addEventListener('click', () => {
+    const i = SPEED_OPTIONS.indexOf(speedMult);
+    setSpeed(SPEED_OPTIONS[(i + 1) % SPEED_OPTIONS.length]);
+  });
+
+  // Burger menu opens the settings panel (SFX/MUSIC/SPEED/DEV live here now)
+  const menuPanel = document.getElementById('menuPanel');
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    menuPanel.classList.toggle('open');
+  });
+  document.getElementById('menuCloseX').addEventListener('click', () => {
+    menuPanel.classList.remove('open');
+  });
+
+  // Slot definitions: left to right, at bottom of board
+  const slots = [
+    { type: 'bust',    label: 'BUST',    mult: 0,  cls: 'slot-bust',    w: 2.5 },
+    { type: 'collect', label: '×1',      mult: 1,  cls: 'slot-collect', w: 2.0 },
+    { type: 'jackpot', label: '×10',     mult: 10, cls: 'slot-jackpot', w: 1.0 },
+    { type: 'collect', label: '×1',      mult: 1,  cls: 'slot-collect', w: 2.0 },
+    { type: 'bust',    label: 'BUST',    mult: 0,  cls: 'slot-bust',    w: 2.5 },
+  ];
+  // Compute weighted x boundaries for each slot
+  const totalW = slots.reduce((s, x) => s + x.w, 0);
+  {
+    let acc = 0;
+    for (const s of slots) {
+      s.x1 = (acc / totalW) * W;
+      acc += s.w;
+      s.x2 = (acc / totalW) * W;
+      s.cx = (s.x1 + s.x2) / 2;
+    }
+  }
+
+  const slotsRow = document.getElementById('slotsRow');
+  slots.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'slot-chip ' + s.cls;
+    el.textContent = s.label;
+    el.dataset.idx = i;
+    el.style.flex = s.w;
+    slotsRow.appendChild(el);
+  });
+  const slotEls = [...slotsRow.children];
+
+  // Playfield layout: real pinball feel with pop bumpers + slingshots + scattered pegs
+  const pegs = [];
+
+  // Pop bumpers (round, add energy back)
+  pegs.push({ x: 95,  y: 100, r: 15, glow: 0, bumper: true, cd: 0 });
+  pegs.push({ x: 190, y: 60,  r: 15, glow: 0, bumper: true, cd: 0 });
+  pegs.push({ x: 285, y: 100, r: 15, glow: 0, bumper: true, cd: 0 });
+  pegs.push({ x: 190, y: 260, r: 16, glow: 0, bumper: true, cd: 0 });
+
+  // Scattered small pegs — sparse pattern with clusters
+  const smallPegs = [
+    // upper cluster — deflectors right below top bumpers
+    [55, 160], [140, 160], [240, 160], [325, 160],
+    [95, 145], [190, 130], [285, 145],
+    // mid area
+    [70, 210], [120, 230], [260, 230], [310, 210],
+    [50, 290], [95, 250], [285, 250], [330, 290],
+    // around center bumper
+    [140, 300], [240, 300], [95, 340], [285, 340],
+    // between slingshots (catches balls slingshot up)
+    [70, 350], [140, 370], [240, 370], [310, 350],
+    // ledge just above bottom peg field
+    [190, 395],
+    // bottom peg field (dense — right before slots)
+    [40, 420], [90, 420], [140, 420], [190, 420], [240, 420], [290, 420], [340, 420],
+    [65, 450], [115, 450], [165, 450], [215, 450], [265, 450], [315, 450],
+    [40, 480], [90, 480], [140, 480], [190, 480], [240, 480], [290, 480], [340, 480],
+  ];
+  for (const [x, y] of smallPegs) {
+    pegs.push({ x, y, r: 5, glow: 0, bumper: false, cd: 0 });
+  }
+
+  // Slingshot triangles — punch the ball up and inward
+  const slings = [
+    {
+      // left slingshot: triangle at (18,395)-(18,320)-(105,395), hypotenuse fires up-right
+      ax: 18,  ay: 395,
+      bx: 18,  by: 320,
+      cx: 105, cy: 395,
+      x1: 18,  y1: 320,
+      x2: 105, y2: 395,
+      nx: 0.694, ny: -0.720, // outward-perpendicular to hypotenuse (up-right)
+      cd: 0, glow: 0,
+    },
+    {
+      // right slingshot: mirror
+      ax: W - 18,  ay: 395,
+      bx: W - 18,  by: 320,
+      cx: W - 105, cy: 395,
+      x1: W - 18,  y1: 320,
+      x2: W - 105, y2: 395,
+      nx: -0.694, ny: -0.720,
+      cd: 0, glow: 0,
+    },
+  ];
+
+  // Slot dividers (vertical walls at bottom, so ball settles into one slot)
+  const slotFloorY = H - 12;
+  const slotTopY = H - 78;
+  const dividers = [];
+  for (let i = 1; i < slots.length; i++) {
+    dividers.push({ x: slots[i].x1, y1: slotTopY, y2: slotFloorY });
+  }
+
+  // Particles for peg hits and slot land
+  const particles = [];
+  // Floating "+0.12×" texts spawned at each peg hit
+  const floaters = [];
+  // Pulse amount for the giant in-board multiplier (decays to 0)
+  let multiPulse = 0;
+  // Bust shrink: 1 immediately after bust, decays to 0, at which point multiplier is cleared
+  let bustAnim = 0;
+
+  // Seeded PRNG (mulberry32) so a given seed always produces the same round.
+  // Only physics-critical randomness uses this; particle sparks etc. still use Math.random.
+  function mulberry32(seed) {
+    let s = seed >>> 0;
+    return function() {
+      s = (s + 0x6D2B79F5) >>> 0;
+      let t = s;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  let physRand = Math.random;
+  let currentSeed = null;
+  let armedSeed = null;
+
+  // Ball
+  let ball = null;
+  let multiplier = 0;
+  let balance = 500;
+  let bet = 5;
+  let winAmt = 0;
+  let isPlaying = false;
+  const betSteps = [1, 2, 5, 10, 25, 50, 100];
+  let betIdx = 2;
+
+  // ---- Cheat / force-outcome ----
+  let cheatPending = null; // { type: 'bust'|'win'|'jackpot', value: number }
+  const cheatPanel  = document.getElementById('cheatPanel');
+  const cheatType   = document.getElementById('cheatType');
+  const cheatValue  = document.getElementById('cheatValue');
+  const cheatStatus = document.getElementById('cheatStatus');
+  document.getElementById('devBtn').addEventListener('click', () => {
+    cheatPanel.classList.toggle('open');
+  });
+  document.getElementById('cheatCloseX').addEventListener('click', () => {
+    cheatPanel.classList.remove('open');
+  });
+  cheatPanel.querySelectorAll('.cheat-quick button').forEach(btn => {
+    btn.addEventListener('click', () => { cheatValue.value = btn.dataset.v; });
+  });
+  function describeCheat(c) {
+    if (!c) return 'not armed';
+    if (c.type === 'bust') return `Armed: BUST (multi will grow to ${c.value.toFixed(2)}× then wipe)`;
+    if (c.type === 'jackpot') return `Armed: JACKPOT ×10 → ${c.value.toFixed(2)}×`;
+    return `Armed: WIN ${c.value.toFixed(2)}×`;
+  }
+  document.getElementById('cheatApply').addEventListener('click', () => {
+    const type = cheatType.value;
+    const value = Math.max(0, parseFloat(cheatValue.value) || 0);
+    cheatPending = { type, value };
+    cheatStatus.textContent = describeCheat(cheatPending);
+  });
+  document.getElementById('cheatClear').addEventListener('click', () => {
+    cheatPending = null;
+    cheatStatus.textContent = 'not armed';
+  });
+  function cheatTargetSlotIdx() {
+    if (!cheatPending) return -1;
+    if (cheatPending.type === 'jackpot') return 2;
+    if (cheatPending.type === 'win') {
+      // pick nearer ×1 slot to keep the animation sensible
+      return (ball && ball.x < W / 2) ? 1 : 3;
+    }
+    return (ball && ball.x < W / 2) ? 0 : 4;
+  }
+
+  // ---- Headless simulator: run one deterministic round given a seed ----
+  function simulateOne(seed) {
+    const rand = mulberry32(seed);
+    const simPegs = pegs.map(p => ({ x: p.x, y: p.y, r: p.r, bumper: p.bumper, cd: 0 }));
+    const simSlings = slings.map(s => ({
+      x1: s.x1, y1: s.y1, x2: s.x2, y2: s.y2, nx: s.nx, ny: s.ny, cd: 0
+    }));
+    const b = {
+      x: W / 2 + (rand() - 0.5) * 60,
+      y: 22,
+      vx: (rand() - 0.5) * 4,
+      vy: 1.5 + rand() * 1.5,
+      r: 8,
+    };
+    let m = 0;
+    for (let f = 0; f < 3000; f++) {
+      for (let st = 0; st < 4; st++) {
+        b.vy += 0.09;
+        b.vx *= 0.9994;
+        b.x += b.vx / 4;
+        b.y += b.vy / 4;
+        if (b.x < b.r + 4)     { b.x = b.r + 4;     b.vx = -b.vx * 0.92; }
+        if (b.x > W - b.r - 4) { b.x = W - b.r - 4; b.vx = -b.vx * 0.92; }
+        if (b.y < b.r + 4)     { b.y = b.r + 4;     b.vy = Math.abs(b.vy) * 0.7; }
+        for (const p of simPegs) {
+          if (p.cd > 0) continue;
+          const dx = b.x - p.x, dy = b.y - p.y;
+          const dist = Math.hypot(dx, dy) || 0.0001;
+          const minDist = b.r + p.r;
+          if (dist < minDist) {
+            const nx = dx / dist, ny = dy / dist;
+            b.x = p.x + nx * (minDist + 0.6);
+            b.y = p.y + ny * (minDist + 0.6);
+            const dot = b.vx * nx + b.vy * ny;
+            if (dot < 0) {
+              const rest = p.bumper ? 1.24 : 0.93;
+              b.vx = (b.vx - 2 * dot * nx) * rest;
+              b.vy = (b.vy - 2 * dot * ny) * rest;
+              if (p.bumper) { b.vx += nx * 2.6; b.vy += ny * 2.6; }
+            }
+            b.vx += (rand() - 0.5) * 0.5;
+            const sp = Math.hypot(b.vx, b.vy);
+            const maxSp = p.bumper ? 13 : 11;
+            if (sp > maxSp) { b.vx = b.vx / sp * maxSp; b.vy = b.vy / sp * maxSp; }
+            p.cd = p.bumper ? 18 : 10;
+            m += p.bumper ? 0.22 : 0.045;
+          }
+        }
+        for (const sl of simSlings) {
+          if (sl.cd > 0) continue;
+          const sdx = sl.x2 - sl.x1, sdy = sl.y2 - sl.y1;
+          const lenSq = sdx * sdx + sdy * sdy;
+          const t = Math.max(0, Math.min(1,
+            ((b.x - sl.x1) * sdx + (b.y - sl.y1) * sdy) / lenSq));
+          const px = sl.x1 + t * sdx, py = sl.y1 + t * sdy;
+          const distX = b.x - px, distY = b.y - py;
+          const dist = Math.hypot(distX, distY) || 0.0001;
+          if (dist < b.r + 3) {
+            const side = distX * sl.nx + distY * sl.ny;
+            if (side < 0) continue;
+            b.x = px + sl.nx * (b.r + 5);
+            b.y = py + sl.ny * (b.r + 5);
+            const dot = b.vx * sl.nx + b.vy * sl.ny;
+            if (dot < 0) {
+              b.vx = (b.vx - 2 * dot * sl.nx) * 1.22;
+              b.vy = (b.vy - 2 * dot * sl.ny) * 1.22;
+            }
+            b.vx += sl.nx * 3.6;
+            b.vy += sl.ny * 3.6;
+            const sp = Math.hypot(b.vx, b.vy);
+            if (sp > 13) { b.vx = b.vx / sp * 13; b.vy = b.vy / sp * 13; }
+            sl.cd = 14;
+            m += 0.12;
+          }
+        }
+        for (const d of dividers) {
+          if (b.y + b.r > d.y1 && b.y - b.r < d.y2) {
+            const dx = b.x - d.x;
+            if (Math.abs(dx) < b.r) {
+              b.x = d.x + Math.sign(dx || 1) * b.r;
+              b.vx = -b.vx * 0.5;
+            }
+          }
+        }
+        if (b.y > H - 20) {
+          let idx = slots.findIndex(s => b.x < s.x2);
+          if (idx < 0) idx = slots.length - 1;
+          return { multi: m, slotIdx: idx };
+        }
+      }
+      for (const p of simPegs) if (p.cd > 0) p.cd--;
+      for (const s of simSlings) if (s.cd > 0) s.cd--;
+    }
+    return { multi: m, slotIdx: 0, timeout: true };
+  }
+  function outcomeType(slotIdx) { return slots[slotIdx].type === 'jackpot' ? 'jackpot' : slots[slotIdx].type === 'bust' ? 'bust' : 'win'; }
+  function finalMulti(sim) {
+    const t = outcomeType(sim.slotIdx);
+    if (t === 'bust') return 0;
+    if (t === 'jackpot') return sim.multi * 10;
+    return sim.multi;
+  }
+
+  // ---- DEV: seed input + simulate-1000 UI ----
+  const seedInput  = document.getElementById('seedInput');
+  const seedStatus = document.getElementById('seedStatus');
+  const simResults = document.getElementById('simResults');
+  const simListEl  = document.getElementById('simList');
+  const simSummary = document.getElementById('simSummary');
+  let lastSim = [];
+  let simFilter = 'all';
+
+  function updateSeedDisplay() {
+    if (armedSeed != null) {
+      seedStatus.textContent = `Seed locked: ${armedSeed} (every round replays this)`;
+    } else if (currentSeed != null) {
+      seedStatus.textContent = `Last played seed: ${currentSeed}`;
+    } else {
+      seedStatus.textContent = '';
+    }
+  }
+  document.getElementById('armSeed').addEventListener('click', () => {
+    const v = parseInt(seedInput.value, 10);
+    if (!Number.isFinite(v) || v < 0) { seedStatus.textContent = 'Enter a positive integer seed'; return; }
+    armedSeed = v >>> 0;
+    updateSeedDisplay();
+  });
+  document.getElementById('clearSeed').addEventListener('click', () => {
+    armedSeed = null;
+    updateSeedDisplay();
+  });
+
+  function renderSimList() {
+    let rows = lastSim.slice();
+    if (simFilter === 'bust')    rows = rows.filter(r => r.type === 'bust');
+    if (simFilter === 'win')     rows = rows.filter(r => r.type === 'win');
+    if (simFilter === 'jackpot') rows = rows.filter(r => r.type === 'jackpot');
+    if (simFilter === 'top') rows = rows.slice().sort((a, b) => b.finalMulti - a.finalMulti).slice(0, 200);
+    else rows = rows.slice().sort((a, b) => b.finalMulti - a.finalMulti);
+    simListEl.innerHTML = '';
+    for (const r of rows.slice(0, 400)) {
+      const row = document.createElement('div');
+      row.className = 'simRow ' + r.type;
+      const label = r.type === 'bust' ? 'BUST' :
+                    r.type === 'jackpot' ? `JACKPOT ${r.finalMulti.toFixed(2)}×` :
+                    `${r.finalMulti.toFixed(2)}×`;
+      row.innerHTML = `<span class="val">${label}</span><span class="seed">seed ${r.seed}</span>`;
+      row.addEventListener('click', () => {
+        armedSeed = r.seed >>> 0;
+        seedInput.value = r.seed;
+        updateSeedDisplay();
+      });
+      simListEl.appendChild(row);
+    }
+    if (rows.length === 0) simListEl.innerHTML = '<div style="padding:12px; text-align:center; opacity:0.6;">no matches</div>';
+  }
+  cheatPanel.querySelectorAll('.simFilter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      simFilter = btn.dataset.filter;
+      cheatPanel.querySelectorAll('.simFilter').forEach(b => b.classList.toggle('active', b === btn));
+      renderSimList();
+    });
+  });
+
+  function runSimulation(N) {
+    const CHUNK = 1500;  // rounds per batch — keeps UI responsive
+    let i = 0;
+    let bust = 0, win = 0, jackpot = 0;
+    let totalReturn = 0;
+    let bestFinal = 0;
+    lastSim = [];
+    const t0 = performance.now();
+    cheatPanel.querySelectorAll('.simRunBtn').forEach(b => b.disabled = true);
+    simResults.style.display = 'block';
+
+    function step() {
+      const end = Math.min(i + CHUNK, N);
+      for (; i < end; i++) {
+        const seed = (Math.floor(Math.random() * 0xFFFFFFFF)) >>> 0;
+        const r = simulateOne(seed);
+        const type = outcomeType(r.slotIdx);
+        const fm = finalMulti(r);
+        lastSim.push({ seed, type, multi: r.multi, slotIdx: r.slotIdx, finalMulti: fm });
+        if (type === 'bust') bust++;
+        else if (type === 'jackpot') jackpot++;
+        else win++;
+        totalReturn += fm;
+        if (fm > bestFinal) bestFinal = fm;
+      }
+      if (i < N) {
+        const pct = ((i / N) * 100).toFixed(0);
+        seedStatus.textContent = `simulating ${i.toLocaleString()}/${N.toLocaleString()} (${pct}%) · best so far ${bestFinal.toFixed(2)}×`;
+        setTimeout(step, 0);
+      } else {
+        const dt = Math.round(performance.now() - t0);
+        const rtp = (totalReturn / N * 100).toFixed(1);
+        simSummary.textContent =
+          `${N.toLocaleString()} sims in ${dt.toLocaleString()}ms · RTP ${rtp}% · bust ${bust.toLocaleString()} · win ${win.toLocaleString()} · JP ${jackpot.toLocaleString()} · best ${bestFinal.toFixed(2)}×`;
+        simFilter = 'top';
+        cheatPanel.querySelectorAll('.simFilter').forEach(b => b.classList.toggle('active', b.dataset.filter === 'top'));
+        renderSimList();
+        seedStatus.textContent = '';
+        cheatPanel.querySelectorAll('.simRunBtn').forEach(b => b.disabled = false);
+      }
+    }
+    setTimeout(step, 30);
+  }
+  cheatPanel.querySelectorAll('.simRunBtn').forEach(btn => {
+    btn.addEventListener('click', () => runSimulation(parseInt(btn.dataset.n, 10)));
+  });
+  let sessionWagered = 0;
+  let sessionReturned = 0;
+  const rtpValEl = document.getElementById('rtpVal');
+  const rtpNEl = document.getElementById('rtpN');
+  let sessionPlays = 0;
+  function updateRTP() {
+    if (sessionWagered <= 0) { rtpValEl.textContent = '—'; rtpNEl.textContent = ''; return; }
+    const pct = (sessionReturned / sessionWagered) * 100;
+    rtpValEl.textContent = pct.toFixed(1) + '%';
+    rtpNEl.textContent = `(${sessionPlays})`;
+  }
+
+  const fmt = v => '$' + v.toFixed(2);
+  const balEl = document.getElementById('balance');
+  const betEl = document.getElementById('bet');
+  const winEl = document.getElementById('win');
+  const multiEl = document.getElementById('multiValue');
+  const launchBtn = document.getElementById('launchBtn');
+  const toast = document.getElementById('toast');
+
+  function updateUI() {
+    balEl.textContent = fmt(balance);
+    betEl.textContent = fmt(bet);
+    winEl.textContent = fmt(winAmt);
+    multiEl.textContent = multiplier.toFixed(2) + '×';
+  }
+  updateUI();
+
+  // Multiplier history strip + live "current" chip
+  const historyEl = document.getElementById('history');
+  const history = [];
+  const HISTORY_MAX = 8;
+  let currentChipEl = null;
+
+  function makeChip(cls, text) {
+    const chip = document.createElement('div');
+    chip.className = 'history-chip ' + cls;
+    chip.textContent = text;
+    return chip;
+  }
+  function renderHistory() {
+    historyEl.innerHTML = '';
+    if (currentChipEl) historyEl.appendChild(currentChipEl);
+    for (const h of history) {
+      historyEl.appendChild(makeChip(h.type, h.type === 'bust' ? 'BUST' : h.mult.toFixed(2) + '×'));
+    }
+  }
+  function startCurrentChip() {
+    currentChipEl = makeChip('current enter', '0.00×');
+    renderHistory();
+  }
+  function endCurrentChip(type, mult) {
+    if (!currentChipEl) return;
+    currentChipEl.className = 'history-chip ' + type;
+    currentChipEl.textContent = type === 'bust' ? 'BUST' : mult.toFixed(2) + '×';
+    history.unshift({ mult, type });
+    if (history.length > HISTORY_MAX) history.pop();
+    currentChipEl = null;
+    // Trim any overflow so the row length stays fixed
+    while (historyEl.children.length > HISTORY_MAX) historyEl.removeChild(historyEl.lastChild);
+  }
+  // Seed the strip so it's not empty on load
+  const seedOutcomes = [
+    { mult: 4.20, type: 'win' },
+    { mult: 12.6, type: 'jackpot' },
+    { mult: 2.85, type: 'win' },
+    { mult: 0,    type: 'bust' },
+    { mult: 6.75, type: 'win' },
+    { mult: 3.90, type: 'win' },
+    { mult: 0,    type: 'bust' },
+    { mult: 5.10, type: 'win' },
+  ];
+  seedOutcomes.forEach(o => history.push(o));
+  renderHistory();
+
+  function bumpMulti(amount, x, y, big) {
+    multiplier += amount;
+    multiEl.textContent = multiplier.toFixed(2) + '×';
+    multiEl.classList.remove('pulse');
+    void multiEl.offsetWidth;
+    multiEl.classList.add('pulse');
+    multiPulse = Math.min(1, multiPulse + (big ? 0.9 : 0.35));
+    if (currentChipEl) currentChipEl.textContent = multiplier.toFixed(2) + '×';
+    if (x != null && floaters.length < 12) {
+      floaters.push({
+        x, y: y - 14,
+        vy: -1.1,
+        life: 42,
+        text: '+' + amount.toFixed(2) + '×',
+        big: !!big,
+      });
+    }
+  }
+
+  function showToast(main, sub, kind) {
+    toast.className = 'toast' + (kind === 'bust' ? ' bust' : '');
+    toast.innerHTML = (sub ? `<small>${sub}</small>` : '') + main;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  function launch() {
+    if (isPlaying) return;
+    if (balance < bet) { showToast('LOW BALANCE', '', 'bust'); return; }
+    ensureAudio();
+    startMusic();
+    balance -= bet;
+    sessionWagered += bet;
+    sessionPlays += 1;
+    // Seed the physics RNG for this round.
+    // If armedSeed is set, keep it armed across rounds until explicitly cleared.
+    currentSeed = (armedSeed != null) ? armedSeed : (Math.floor(Math.random() * 0xFFFFFFFF) >>> 0);
+    physRand = mulberry32(currentSeed);
+    if (typeof updateSeedDisplay === 'function') updateSeedDisplay();
+    startCurrentChip();
+    winAmt = 0;
+    multiplier = 0;
+    updateUI();
+    isPlaying = true;
+    launchBtn.disabled = true;
+
+    // Ball starts near top-center with slight random horizontal velocity
+    ball = {
+      x: W / 2 + (physRand() - 0.5) * 60,
+      y: 22,
+      vx: (physRand() - 0.5) * 4,
+      vy: 1.5 + physRand() * 1.5,
+      r: 8,
+      trail: [],
+    };
+  }
+  launchBtn.addEventListener('click', launch);
+
+  document.getElementById('betUp').addEventListener('click', () => {
+    if (isPlaying) return;
+    betIdx = Math.min(betSteps.length - 1, betIdx + 1);
+    bet = betSteps[betIdx];
+    updateUI();
+  });
+  document.getElementById('betDown').addEventListener('click', () => {
+    if (isPlaying) return;
+    betIdx = Math.max(0, betIdx - 1);
+    bet = betSteps[betIdx];
+    updateUI();
+  });
+
+  function endBall(slotIdx) {
+    isPlaying = false;
+    const slot = slots[slotIdx];
+    const el = slotEls[slotIdx];
+    el.classList.add('hit');
+    setTimeout(() => el.classList.remove('hit'), 900);
+    // Burst particles from slot
+    for (let i = 0; i < 30; i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 0.6;
+      const s = 2 + Math.random() * 4;
+      particles.push({
+        x: slot.cx,
+        y: H - 40,
+        vx: Math.cos(a) * s,
+        vy: Math.sin(a) * s,
+        life: 40 + Math.random() * 20,
+        color: slot.type === 'bust' ? '#ff5555' : slot.type === 'jackpot' ? '#ffe066' : '#8fff8f',
+      });
+    }
+    // Cheat: override the accumulated multiplier before payout math runs
+    if (cheatPending) {
+      if (cheatPending.type === 'jackpot') {
+        // JACKPOT will multiply by 10; pre-divide so displayed final = cheat value
+        multiplier = cheatPending.value / 10;
+      } else {
+        multiplier = cheatPending.value;
+      }
+      multiEl.textContent = multiplier.toFixed(2) + '×';
+      if (currentChipEl) currentChipEl.textContent = multiplier.toFixed(2) + '×';
+      cheatPending = null;
+      cheatStatus.textContent = 'not armed';
+    }
+
+    if (slot.type === 'bust') {
+      winAmt = 0;
+      showToast('BUST', 'MULTIPLIER LOST', 'bust');
+      bustAnim = 1;
+      balEl.textContent = fmt(balance);
+      betEl.textContent = fmt(bet);
+      winEl.textContent = fmt(winAmt);
+      endCurrentChip('bust', 0);
+      playBust();
+    } else {
+      if (slot.mult !== 1) {
+        multiplier = multiplier * slot.mult;
+        multiPulse = 1;
+      }
+      const payout = bet * multiplier;
+      winAmt = payout;
+      balance += payout;
+      sessionReturned += payout;
+      const sub = slot.type === 'jackpot' ? `JACKPOT ×10` : `${multiplier.toFixed(2)}× WIN`;
+      showToast(fmt(payout), sub);
+      updateUI();
+      launchBtn.disabled = false;
+      endCurrentChip(slot.type === 'jackpot' ? 'jackpot' : 'win', multiplier);
+      if (slot.type === 'jackpot') playJackpot(); else playWin();
+    }
+    updateRTP();
+    ball = null;
+  }
+
+  let physAccumulator = 0;
+  function tick() {
+    // Accumulator advances by speedMult per frame; each whole unit runs one
+    // physics iteration. Determinism preserved: same seed → same outcome at
+    // any speed, since physRand is consumed in the same order.
+    physAccumulator += speedMult;
+    const iters = Math.floor(physAccumulator);
+    physAccumulator -= iters;
+    for (let physIter = 0; physIter < iters; physIter++) {
+      if (!ball) break;
+      const steps = 4; // sub-steps for stable collisions
+      for (let s = 0; s < steps; s++) {
+        ball.vy += 0.09;
+        ball.vx *= 0.9994;
+        ball.x += ball.vx / steps;
+        ball.y += ball.vy / steps;
+
+        // walls (bouncy)
+        if (ball.x < ball.r + 4) { ball.x = ball.r + 4; ball.vx = -ball.vx * 0.92; }
+        if (ball.x > W - ball.r - 4) { ball.x = W - ball.r - 4; ball.vx = -ball.vx * 0.92; }
+        // top wall (in case bumper sends ball too high)
+        if (ball.y < ball.r + 4) { ball.y = ball.r + 4; ball.vy = Math.abs(ball.vy) * 0.7; }
+
+        // peg / bumper collisions
+        for (const p of pegs) {
+          if (p.cd > 0) continue;
+          const dx = ball.x - p.x;
+          const dy = ball.y - p.y;
+          const dist = Math.hypot(dx, dy) || 0.0001;
+          const minDist = ball.r + p.r;
+          if (dist < minDist) {
+            const nx = dx / dist, ny = dy / dist;
+            ball.x = p.x + nx * (minDist + 0.6);
+            ball.y = p.y + ny * (minDist + 0.6);
+            const dot = ball.vx * nx + ball.vy * ny;
+            if (dot < 0) {
+              const restitution = p.bumper ? 1.24 : 0.93;
+              ball.vx = (ball.vx - 2 * dot * nx) * restitution;
+              ball.vy = (ball.vy - 2 * dot * ny) * restitution;
+              // pop bumper: extra normal-direction kick
+              if (p.bumper) {
+                ball.vx += nx * 2.6;
+                ball.vy += ny * 2.6;
+              }
+            }
+            ball.vx += (physRand() - 0.5) * 0.5;
+            // speed cap
+            const sp = Math.hypot(ball.vx, ball.vy);
+            const maxSp = p.bumper ? 13 : 11;
+            if (sp > maxSp) { ball.vx = ball.vx / sp * maxSp; ball.vy = ball.vy / sp * maxSp; }
+            p.glow = 1;
+            p.cd = p.bumper ? 18 : 10;
+            if (p.bumper) playBumper(); else playPeg();
+            bumpMulti(p.bumper ? 0.22 : 0.045, p.x, p.y, p.bumper);
+            for (let i = 0; i < (p.bumper ? 14 : 4); i++) {
+              const a = Math.random() * Math.PI * 2;
+              const sp = 1 + Math.random() * 3;
+              particles.push({
+                x: p.x + nx * p.r, y: p.y + ny * p.r,
+                vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+                life: 18 + Math.random() * 12,
+                color: p.bumper ? '#ffde6b' : '#ff9095',
+              });
+            }
+          }
+        }
+
+        // slingshot triangles: line-segment collision on the hypotenuse
+        for (const sling of slings) {
+          if (sling.cd > 0) continue;
+          const sdx = sling.x2 - sling.x1, sdy = sling.y2 - sling.y1;
+          const lenSq = sdx * sdx + sdy * sdy;
+          const t = Math.max(0, Math.min(1,
+            ((ball.x - sling.x1) * sdx + (ball.y - sling.y1) * sdy) / lenSq));
+          const px = sling.x1 + t * sdx;
+          const py = sling.y1 + t * sdy;
+          const distX = ball.x - px, distY = ball.y - py;
+          const dist = Math.hypot(distX, distY) || 0.0001;
+          if (dist < ball.r + 3) {
+            // only collide on the outward-normal side
+            const side = distX * sling.nx + distY * sling.ny;
+            if (side < 0) continue;
+            ball.x = px + sling.nx * (ball.r + 5);
+            ball.y = py + sling.ny * (ball.r + 5);
+            const dot = ball.vx * sling.nx + ball.vy * sling.ny;
+            if (dot < 0) {
+              const r = 1.22;
+              ball.vx = (ball.vx - 2 * dot * sling.nx) * r;
+              ball.vy = (ball.vy - 2 * dot * sling.ny) * r;
+            }
+            // fixed kick along outward normal — the "pop"
+            ball.vx += sling.nx * 3.6;
+            ball.vy += sling.ny * 3.6;
+            const sp = Math.hypot(ball.vx, ball.vy);
+            if (sp > 13) { ball.vx = ball.vx / sp * 13; ball.vy = ball.vy / sp * 13; }
+            sling.glow = 1;
+            sling.cd = 14;
+            playSling();
+            bumpMulti(0.12, px, py, true);
+            for (let i = 0; i < 12; i++) {
+              const a = Math.random() * Math.PI * 2;
+              const spd = 1 + Math.random() * 3.5;
+              particles.push({
+                x: px, y: py,
+                vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+                life: 22 + Math.random() * 14,
+                color: '#ff6b6b',
+              });
+            }
+          }
+        }
+
+        // divider collisions (thin vertical walls at bottom)
+        for (const d of dividers) {
+          if (ball.y + ball.r > d.y1 && ball.y - ball.r < d.y2) {
+            const dx = ball.x - d.x;
+            if (Math.abs(dx) < ball.r) {
+              ball.x = d.x + Math.sign(dx || 1) * ball.r;
+              ball.vx = -ball.vx * 0.5;
+            }
+          }
+        }
+
+        // Cheat: steer ball toward target slot on descent
+        if (cheatPending && ball.y > 380 && ball.vy > 0) {
+          const idx = cheatTargetSlotIdx();
+          if (idx >= 0) {
+            const targetX = slots[idx].cx;
+            const t = Math.min(0.35, (ball.y - 380) / 250);
+            ball.x += (targetX - ball.x) * t;
+            ball.vx *= 0.75;
+            // Once inside slot area, hard lock so dividers don't bounce us out
+            if (ball.y > slotTopY - 4) {
+              ball.x = targetX;
+              ball.vx = 0;
+            }
+          }
+        }
+
+        // slot landed?
+        if (ball.y > H - 20) {
+          let idx = slots.findIndex(s => ball.x < s.x2);
+          if (idx < 0) idx = slots.length - 1;
+          endBall(idx);
+          break;
+        }
+      }
+      // trail (ball may have been nulled by endBall in the sub-step loop)
+      if (ball) {
+        ball.trail.push({ x: ball.x, y: ball.y });
+        if (ball.trail.length > 10) ball.trail.shift();
+      }
+      // Cooldown decrement (physics — must tick with the physics loop)
+      for (const p of pegs)     if (p.cd > 0) p.cd--;
+      for (const sl of slings)  if (sl.cd > 0) sl.cd--;
+    }
+
+    // particle update
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.vy += 0.08;
+      p.x += p.vx; p.y += p.vy;
+      p.life--;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    // peg / sling glow decay (visual, once per rAF)
+    for (const p of pegs) p.glow *= 0.9;
+    for (const sling of slings) sling.glow *= 0.88;
+
+    // multiplier pulse decay
+    multiPulse *= 0.9;
+
+    // bust shrink animation: shrinks multiplier value + display toward 0
+    if (bustAnim > 0) {
+      bustAnim *= 0.88;
+      const shown = multiplier * bustAnim;
+      multiEl.textContent = shown.toFixed(2) + '×';
+      if (bustAnim < 0.015) {
+        bustAnim = 0;
+        multiplier = 0;
+        multiEl.textContent = '0.00×';
+        launchBtn.disabled = false;
+      }
+    }
+
+    // floater update
+    for (let i = floaters.length - 1; i >= 0; i--) {
+      const f = floaters[i];
+      f.y += f.vy;
+      f.vy *= 0.96;
+      f.life--;
+      if (f.life <= 0) floaters.splice(i, 1);
+    }
+
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Big multiplier text behind pegs (center of board)
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const cx = W / 2, cy = 250;
+    const shrink = bustAnim > 0 ? bustAnim : 1;
+    const pulse = 1 + multiPulse * 0.12;
+    let baseSize = 128 * pulse * shrink;
+    const shownMulti = multiplier * shrink;
+    const txt = shownMulti.toFixed(2) + '×';
+    // measure and clamp to canvas width
+    ctx.font = '900 ' + baseSize + 'px system-ui, sans-serif';
+    const maxTextW = W * 0.86;
+    const measured = ctx.measureText(txt).width;
+    if (measured > maxTextW) {
+      baseSize = baseSize * (maxTextW / measured);
+      ctx.font = '900 ' + baseSize + 'px system-ui, sans-serif';
+    }
+    // outer soft glow
+    ctx.shadowColor = 'rgba(242, 201, 76, ' + (0.55 + multiPulse * 0.4) + ')';
+    ctx.shadowBlur = 30 + multiPulse * 40;
+    // dark stroke for legibility
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.55)';
+    ctx.strokeText(txt, cx, cy);
+    // fill with gold gradient
+    const g = ctx.createLinearGradient(0, cy - baseSize / 2, 0, cy + baseSize / 2);
+    g.addColorStop(0, '#fff2b0');
+    g.addColorStop(0.5, '#f2c94c');
+    g.addColorStop(1, '#a06a10');
+    ctx.fillStyle = g;
+    ctx.globalAlpha = (0.85 + multiPulse * 0.15) * shrink;
+    ctx.fillText(txt, cx, cy);
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    // subtitle
+    ctx.font = '900 15px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(242, 201, 76, 0.5)';
+    ctx.fillText('MULTIPLIER', cx, cy + baseSize / 2 + 6);
+    ctx.restore();
+
+    // Slot floor lines
+    ctx.save();
+    ctx.strokeStyle = 'rgba(201, 154, 58, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, slotTopY);
+    ctx.lineTo(W, slotTopY);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(201, 154, 58, 0.5)';
+    for (const d of dividers) {
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y1);
+      ctx.lineTo(d.x, d.y2);
+      ctx.stroke();
+    }
+    // Slot color hint at bottom of playfield
+    for (let i = 0; i < slots.length; i++) {
+      const s = slots[i];
+      let color = 'rgba(60, 20, 20, 0.5)';
+      if (s.type === 'collect') color = 'rgba(30, 90, 30, 0.35)';
+      if (s.type === 'jackpot') color = 'rgba(140, 100, 20, 0.55)';
+      if (s.type === 'bust') color = 'rgba(120, 20, 20, 0.4)';
+      ctx.fillStyle = color;
+      ctx.fillRect(s.x1 + 1, slotTopY + 1, s.x2 - s.x1 - 2, slotFloorY - slotTopY - 1);
+    }
+    ctx.restore();
+
+    // Slingshots (draw before pegs so pegs sit on top visually)
+    for (const sling of slings) {
+      const g = sling.glow;
+      // outer glow when hit
+      if (g > 0.05) {
+        ctx.save();
+        ctx.globalAlpha = g * 0.6;
+        ctx.fillStyle = '#ff5555';
+        ctx.beginPath();
+        ctx.moveTo(sling.ax + (sling.ax < W/2 ? -8 : 8), sling.ay + 8);
+        ctx.lineTo(sling.bx + (sling.bx < W/2 ? -8 : 8), sling.by - 8);
+        ctx.lineTo(sling.cx + (sling.cx < W/2 ? 8 : -8), sling.cy + 8);
+        ctx.closePath();
+        ctx.filter = 'blur(6px)';
+        ctx.fill();
+        ctx.filter = 'none';
+        ctx.restore();
+      }
+      // triangle body
+      const grad = ctx.createLinearGradient(sling.ax, sling.by, sling.cx, sling.cy);
+      grad.addColorStop(0, g > 0.1 ? '#ff7070' : '#c22a2a');
+      grad.addColorStop(1, g > 0.1 ? '#ff9a30' : '#7a1010');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(sling.ax, sling.ay);
+      ctx.lineTo(sling.bx, sling.by);
+      ctx.lineTo(sling.cx, sling.cy);
+      ctx.closePath();
+      ctx.fill();
+      // gold rim on hypotenuse
+      ctx.strokeStyle = g > 0.1 ? '#ffef99' : '#f2c94c';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(sling.x1, sling.y1);
+      ctx.lineTo(sling.x2, sling.y2);
+      ctx.stroke();
+      // dark rim on legs
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sling.ax, sling.ay);
+      ctx.lineTo(sling.bx, sling.by);
+      ctx.moveTo(sling.ax, sling.ay);
+      ctx.lineTo(sling.cx, sling.cy);
+      ctx.stroke();
+    }
+
+    // Pegs
+    for (const p of pegs) {
+      const glow = p.glow;
+      if (p.bumper) {
+        // outer glow
+        const gr = p.r + 12 + glow * 12;
+        const g = ctx.createRadialGradient(p.x, p.y, p.r, p.x, p.y, gr);
+        g.addColorStop(0, `rgba(242, 201, 76, ${0.5 + glow * 0.4})`);
+        g.addColorStop(1, 'rgba(242, 201, 76, 0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, gr, 0, Math.PI * 2);
+        ctx.fill();
+        // body
+        const bg = ctx.createRadialGradient(p.x - p.r * 0.4, p.y - p.r * 0.4, 1, p.x, p.y, p.r);
+        bg.addColorStop(0, '#fff2c0');
+        bg.addColorStop(0.5, '#f2c94c');
+        bg.addColorStop(1, '#8a5a0a');
+        ctx.fillStyle = bg;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(90, 55, 0, 0.9)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        // small peg glow
+        if (glow > 0.02) {
+          const gr = p.r + 6 + glow * 8;
+          const g = ctx.createRadialGradient(p.x, p.y, p.r, p.x, p.y, gr);
+          g.addColorStop(0, `rgba(255, 120, 120, ${0.4 * glow})`);
+          g.addColorStop(1, 'rgba(255, 120, 120, 0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, gr, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        const bg = ctx.createRadialGradient(p.x - 2, p.y - 2, 0.5, p.x, p.y, p.r);
+        bg.addColorStop(0, glow > 0.1 ? '#ffeaea' : '#f2f2f2');
+        bg.addColorStop(1, glow > 0.1 ? '#c94040' : '#5a2020');
+        ctx.fillStyle = bg;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+
+    // Particles
+    for (const p of particles) {
+      const alpha = Math.max(0, Math.min(1, p.life / 30));
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Floating +0.12× texts from peg hits
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (const f of floaters) {
+      const a = Math.min(1, f.life / 30);
+      ctx.globalAlpha = a;
+      const size = f.big ? 22 : 15;
+      ctx.font = '900 ' + size + 'px system-ui, sans-serif';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+      ctx.strokeText(f.text, f.x, f.y);
+      ctx.fillStyle = f.big ? '#ffde6b' : '#ffd0d0';
+      ctx.fillText(f.text, f.x, f.y);
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    // Ball
+    if (ball) {
+      // trail
+      for (let i = 0; i < ball.trail.length; i++) {
+        const t = ball.trail[i];
+        const a = (i / ball.trail.length) * 0.4;
+        ctx.fillStyle = `rgba(255, 220, 220, ${a})`;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, ball.r * (i / ball.trail.length), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // body
+      const bg = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 0.5, ball.x, ball.y, ball.r);
+      bg.addColorStop(0, '#ffffff');
+      bg.addColorStop(0.5, '#e0e0e0');
+      bg.addColorStop(1, '#707070');
+      ctx.fillStyle = bg;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+
+  tick();
+
+  // Space / click on canvas to launch
+  window.addEventListener('keydown', e => {
+    if (e.code === 'Space') { e.preventDefault(); launch(); }
+  });
+})();
+</script>
+</body>
+</html>
