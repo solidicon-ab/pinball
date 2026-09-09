@@ -269,7 +269,7 @@
     touch-action: none;
     width: 100%;
     height: auto;
-    aspect-ratio: 380 / 760;
+    aspect-ratio: 380 / 620;
     align-self: center;
   }
   .slots-row {
@@ -628,10 +628,10 @@
 <div class="history" id="history" hidden></div>
 
 <div class="cabinet">
-  <div class="cabinet-jackpot">
+  <div class="cabinet-jackpot" style="display:none">
     <div class="multi-value" id="multiValue">0.00×</div>
   </div>
-  <canvas id="board" width="380" height="760"></canvas>
+  <canvas id="board" width="380" height="620"></canvas>
   <div class="slots-row" id="slotsRow"></div>
 </div>
 
@@ -899,11 +899,6 @@
     [40, 420], [90, 420], [140, 420], [190, 420], [240, 420], [290, 420], [340, 420],
     [65, 450], [115, 450], [165, 450], [215, 450], [265, 450], [315, 450],
     [40, 480], [90, 480], [140, 480], [190, 480], [240, 480], [290, 480], [340, 480],
-    // extended field to fill the taller canvas
-    [65, 520], [115, 520], [165, 520], [215, 520], [265, 520], [315, 520],
-    [40, 560], [90, 560], [140, 560], [190, 560], [240, 560], [290, 560], [340, 560],
-    [65, 600], [115, 600], [165, 600], [215, 600], [265, 600], [315, 600],
-    [40, 640], [90, 640], [140, 640], [190, 640], [240, 640], [290, 640], [340, 640],
   ];
   for (const [x, y] of smallPegs) {
     pegs.push({ x, y, r: 5, glow: 0, bumper: false, cd: 0 });
