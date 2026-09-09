@@ -171,7 +171,7 @@
   }
   .phone {
     flex: 0 0 auto;
-    width: 320px; height: 640px;
+    width: 320px; height: 720px;
     background: #000;
     border-radius: 40px;
     border: 8px solid #1e1e22;
@@ -182,7 +182,13 @@
     overflow: hidden;
     position: relative;
   }
-  .phone iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .phone iframe {
+    width: 100%; height: 100%;
+    border: 0;
+    display: block;
+    scrollbar-width: none;
+  }
+  .phone iframe::-webkit-scrollbar { display: none; }
   .qr-block {
     text-align: center;
     background: rgba(0,0,0,0.35);
@@ -211,21 +217,19 @@
     margin-top: 6px;
   }
 
-  /* Reskin slide */
-  .reskin-images {
-    display: flex; flex-direction: column; gap: 14px;
+  /* Reskin slide — one big image */
+  .reskin-hero {
     flex: 1;
-    justify-content: center;
-    align-items: center;
+    display: flex; align-items: center; justify-content: center;
     margin-top: 20px;
   }
-  .reskin-images img {
+  .reskin-hero img {
     width: 100%;
-    max-width: 900px;
-    max-height: 32vh;
+    max-width: 1200px;
+    max-height: 68vh;
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    border-radius: 12px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.6);
   }
 
   /* Close slide */
@@ -269,7 +273,7 @@
 
   <!-- 1. TITLE -->
   <section class="slide cover">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="eyebrow">GAME PITCH</div>
     <h1>Pinball <span class="accent">22,000</span><span class="period">.</span></h1>
     <div class="tag">A pinball table with a live multiplier that starts at zero.</div>
@@ -277,7 +281,7 @@
 
   <!-- 2. UPHILL BATTLE -->
   <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="eyebrow">UPHILL BATTLE</div>
     <h2>I know how this sounds<span class="period">.</span></h2>
     <ul class="points">
@@ -290,7 +294,7 @@
 
   <!-- 3. WHY PINBALL -->
   <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="eyebrow">WHY PINBALL</div>
     <h2>Nostalgic. Flashy. Already casino<span class="period">.</span></h2>
     <div class="split">
@@ -310,7 +314,7 @@
 
   <!-- 4. MY TAKE -->
   <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="eyebrow">MY TAKE</div>
     <h2>It fixes Supershoot<span class="period">.</span></h2>
     <ul class="points">
@@ -325,11 +329,11 @@
 
   <!-- 5. DEMO -->
   <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="eyebrow">PLAY IT NOW</div>
     <div class="demo-wrap">
       <div class="phone">
-        <iframe src="https://solidicon-ab.github.io/pinball/" title="Pinball 22,000 prototype" loading="lazy"></iframe>
+        <iframe src="https://solidicon-ab.github.io/pinball/" title="Pinball 22,000 prototype" loading="lazy" scrolling="no"></iframe>
       </div>
       <div class="qr-block">
         <canvas id="qr" width="280" height="280"></canvas>
@@ -339,20 +343,29 @@
     </div>
   </section>
 
-  <!-- 6. RESKIN -->
+  <!-- 6a. RESKIN — ANY THEME -->
   <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="eyebrow">RESKIN POSSIBILITIES</div>
-    <h2 style="margin-bottom: 24px;">Any theme. Any brand<span class="period">.</span></h2>
-    <div class="reskin-images">
-      <img src="deck-images/cabinets.png" alt="Navigator, Swiminator, Chicken Runner branded pinball cabinets">
+    <h2 style="margin-bottom: 16px;">Any theme<span class="period">.</span></h2>
+    <div class="reskin-hero">
       <img src="deck-images/playfields.png" alt="Space Cadet, Savanna, Deep Dive themed pinball playfields">
+    </div>
+  </section>
+
+  <!-- 6b. RESKIN — ANY BRAND -->
+  <section class="slide">
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
+    <div class="eyebrow">RESKIN POSSIBILITIES</div>
+    <h2 style="margin-bottom: 16px;">Any brand<span class="period">.</span></h2>
+    <div class="reskin-hero">
+      <img src="deck-images/cabinets.png" alt="Navigator, Swiminator, Chicken Runner branded pinball cabinets">
     </div>
   </section>
 
   <!-- 7. CLOSE -->
   <section class="slide close">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
+    <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="big">And that's my <em>pitch</em>.</div>
     <div class="under">solidicon-ab.github.io/pinball</div>
   </section>
@@ -416,20 +429,25 @@
   if (!isNaN(initial) && initial >= 1 && initial <= total) go(initial - 1, 0);
   else go(0, 0);
 
+  function renderQRImageFallback() {
+    const el = document.getElementById('qr');
+    if (!el) return;
+    const img = document.createElement('img');
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?data=https%3A%2F%2Fsolidicon-ab.github.io%2Fpinball%2F&size=260x260&margin=1';
+    img.width = 260; img.height = 260;
+    img.alt = 'Scan to play';
+    el.replaceWith(img);
+  }
   if (window.QRCode) {
     QRCode.toCanvas(document.getElementById('qr'), 'https://solidicon-ab.github.io/pinball/', {
       width: 260,
       margin: 1,
       color: { dark: '#1a0220', light: '#ffffff' },
       errorCorrectionLevel: 'M'
-    }, err => {
-      if (err) {
-        const img = document.createElement('img');
-        img.src = 'https://api.qrserver.com/v1/create-qr-code/?data=https%3A%2F%2Fsolidicon-ab.github.io%2Fpinball%2F&size=260x260&margin=1';
-        img.width = 260; img.height = 260;
-        document.getElementById('qr').replaceWith(img);
-      }
-    });
+    }, err => { if (err) renderQRImageFallback(); });
+  } else {
+    // QRCode CDN didn't load — use the hosted QR image service instead
+    renderQRImageFallback();
   }
 </script>
 </body>
