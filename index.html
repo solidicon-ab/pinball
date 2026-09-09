@@ -671,7 +671,13 @@
 (() => {
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
+  // Logical drawing coords stay 380x560; backing store scales with DPR so text
+  // and shapes render crisply on retina/high-DPI screens.
+  const W = 380, H = 560;
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
 
   // ----- Audio: Web Audio synth, no files. SFX and Music on separate buses. -----
   let audioCtx = null;
