@@ -156,11 +156,31 @@
   /* Cover */
   .cover {
     justify-content: center;
+    position: relative;
   }
   .cover .tag {
     font-size: clamp(22px, 2.2vw, 30px);
     color: rgba(255,255,255,0.85);
     max-width: 26ch;
+    position: relative;
+    z-index: 2;
+  }
+  .cover .eyebrow,
+  .cover h1 { position: relative; z-index: 2; }
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('deck-images/arcade.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.32;
+    z-index: 0;
+  }
+  .cover-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(26,2,32,0.85) 0%, rgba(26,2,32,0.35) 60%, rgba(26,2,32,0.75) 100%),
+                linear-gradient(180deg, rgba(26,2,32,0.6), rgba(26,2,32,0.85));
   }
 
   /* Demo slide */
@@ -273,6 +293,7 @@
 
   <!-- 1. TITLE -->
   <section class="slide cover">
+    <div class="cover-bg"></div>
     <div class="brand">PITCH DAY · <b>Oscar Rickett</b> · Pinball 22,000</div>
     <div class="eyebrow">GAME PITCH</div>
     <h1>Pinball <span class="accent">22,000</span><span class="period">.</span></h1>
