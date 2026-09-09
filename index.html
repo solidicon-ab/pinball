@@ -123,6 +123,7 @@
       drop-shadow(0 3px 3px rgba(0,0,0,0.55))
       drop-shadow(0 0 12px rgba(242, 201, 76, 0.55));
   }
+  .history[hidden] { display: none; }
   .history {
     display: flex;
     gap: 5px;
@@ -684,8 +685,12 @@
   let musicGain = null;
   let sfxOff = false;
   let musicOff = false;
+  let iosSilentAudio = null;
   function ensureAudio() {
-    if (audioCtx) return;
+    if (audioCtx) {
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+      return;
+    }
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     audioCtx = new AC();
@@ -695,6 +700,17 @@
     musicGain.gain.value = musicOff ? 0 : 0.6;
     sfxGain.connect(audioCtx.destination);
     musicGain.connect(audioCtx.destination);
+    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+    // iOS: playing a silent HTMLAudio element in the same gesture lets Web
+    // Audio bypass the ringer/silence switch. Loop it so the session stays
+    // active for the whole game.
+    try {
+      iosSilentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+      iosSilentAudio.setAttribute('playsinline', '');
+      iosSilentAudio.loop = true;
+      iosSilentAudio.volume = 0;
+      iosSilentAudio.play().catch(() => {});
+    } catch (e) {}
   }
   function playTone({ freq, freqEnd, type = 'sine', dur = 0.1, vol = 0.15, delay = 0, bus = 'sfx' }) {
     if (!audioCtx) return;
@@ -889,6 +905,11 @@
     [40, 420], [90, 420], [140, 420], [190, 420], [240, 420], [290, 420], [340, 420],
     [65, 450], [115, 450], [165, 450], [215, 450], [265, 450], [315, 450],
     [40, 480], [90, 480], [140, 480], [190, 480], [240, 480], [290, 480], [340, 480],
+    // extended field to fill the taller canvas
+    [65, 520], [115, 520], [165, 520], [215, 520], [265, 520], [315, 520],
+    [40, 560], [90, 560], [140, 560], [190, 560], [240, 560], [290, 560], [340, 560],
+    [65, 600], [115, 600], [165, 600], [215, 600], [265, 600], [315, 600],
+    [40, 640], [90, 640], [140, 640], [190, 640], [240, 640], [290, 640], [340, 640],
   ];
   for (const [x, y] of smallPegs) {
     pegs.push({ x, y, r: 5, glow: 0, bumper: false, cd: 0 });
