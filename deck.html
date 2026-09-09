@@ -24,11 +24,13 @@
     flex: 0 0 100vw;
     height: 100vh;
     position: relative;
-    padding: 6vh 6vw 7vh;
+    padding: 8vh 8vw;
     background:
       radial-gradient(ellipse 55% 55% at 88% 18%, rgba(255,208,110,0.85) 0%, rgba(228,110,55,0.55) 22%, rgba(150,25,80,0.2) 45%, transparent 65%),
       radial-gradient(ellipse 100% 100% at 50% 50%, #5a0d3a 0%, #3a0530 45%, #1a0220 100%);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
   .slide::after {
     content: '';
@@ -38,7 +40,7 @@
     background-size: 32px 6px;
     background-repeat: repeat-x;
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.55;
   }
   .progress {
     position: fixed; top: 0; left: 0;
@@ -49,195 +51,122 @@
     box-shadow: 0 0 8px rgba(245,176,64,0.6);
   }
   .brand {
-    position: absolute; top: 2.4vh; left: 6vw;
+    position: absolute; top: 2.4vh; left: 8vw;
     font-size: 11px;
     letter-spacing: 3px;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.65);
     text-transform: uppercase;
     font-weight: 500;
     z-index: 5;
   }
   .brand b { color: #f5b040; font-weight: 700; letter-spacing: 3px; }
   .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
     color: #f5b040;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 3.5px;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    margin-bottom: 22px;
-  }
-  .eyebrow::before {
-    content: '';
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #f5b040;
-    box-shadow: 0 0 8px rgba(245,176,64,0.7);
-  }
-  .eyebrow.chip::before { display: none; }
-  .eyebrow.chip {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    padding: 6px 14px;
-    border-radius: 999px;
-    color: rgba(255,255,255,0.85);
-    letter-spacing: 2px;
-    font-size: 11px;
+    margin-bottom: 28px;
   }
   h1 {
-    font-size: clamp(48px, 6.4vw, 96px);
+    font-size: clamp(64px, 8vw, 120px);
     font-weight: 800;
     letter-spacing: -0.02em;
-    line-height: 1.02;
-    margin-bottom: 32px;
+    line-height: 1;
+    margin-bottom: 24px;
   }
   h1 .accent { color: #f5b040; }
   h1 .period, h2 .period { color: #f5b040; }
   h2 {
-    font-size: clamp(36px, 4.4vw, 60px);
+    font-size: clamp(44px, 5vw, 76px);
     font-weight: 800;
     letter-spacing: -0.015em;
     line-height: 1.05;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
   }
-  h2 .em { color: #f5b040; }
   .lead {
-    font-size: clamp(22px, 2.2vw, 32px);
+    font-size: clamp(22px, 2vw, 30px);
     font-weight: 400;
-    color: rgba(255,255,255,0.92);
-    line-height: 1.35;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.45;
+    max-width: 58ch;
+  }
+  ul.points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     max-width: 60ch;
   }
-  .cards {
-    display: grid;
-    gap: 20px;
-    margin-top: 8px;
-  }
-  .cards.c3 { grid-template-columns: repeat(3, 1fr); }
-  .cards.c2 { grid-template-columns: repeat(2, 1fr); }
-  .cards.c4 { grid-template-columns: repeat(4, 1fr); }
-  .card {
-    background: linear-gradient(180deg, rgba(35,5,30,0.55), rgba(20,3,20,0.7));
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 22px 24px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
-  }
-  .card-label {
-    color: #f5b040;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .card-body {
-    font-size: clamp(15px, 1.15vw, 18px);
+  ul.points li {
+    font-size: clamp(20px, 1.7vw, 26px);
     color: rgba(255,255,255,0.92);
-    line-height: 1.45;
+    padding: 12px 0 12px 30px;
+    line-height: 1.4;
+    position: relative;
   }
-  .card-body b { color: #fff; }
-  .card-body ul { list-style: none; padding: 0; margin: 0; }
-  .card-body li { padding: 3px 0; }
-  .card-body li::before { content: '· '; color: rgba(255,255,255,0.5); }
+  ul.points li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 22px;
+    width: 12px; height: 2px;
+    background: #f5b040;
+  }
+  ul.points li b { color: #fff; font-weight: 700; }
+  ul.points li em { color: #f5b040; font-style: normal; font-weight: 700; }
 
-  /* Cover slide */
-  .cover {
-    display: flex; flex-direction: column; justify-content: center;
-    height: 100%;
+  .footline {
+    margin-top: auto;
+    padding-top: 40px;
+    font-size: clamp(22px, 2vw, 32px);
+    font-weight: 800;
+    color: #f5b040;
+    letter-spacing: -0.01em;
   }
-  .cover h1 {
-    font-size: clamp(64px, 9vw, 140px);
-    line-height: 0.95;
-    margin-bottom: 12px;
+
+  /* Cover */
+  .cover {
+    justify-content: center;
   }
   .cover .tag {
-    font-size: clamp(22px, 2.4vw, 34px);
+    font-size: clamp(22px, 2.2vw, 30px);
     color: rgba(255,255,255,0.85);
-    letter-spacing: -0.01em;
-    max-width: 22ch;
-  }
-
-  /* The moment slide */
-  .moment {
-    display: flex; align-items: center; justify-content: space-between; gap: 40px;
-    height: 100%;
-  }
-  .moment .left { flex: 0 0 45%; }
-  .moment .right { flex: 1; display: flex; align-items: center; justify-content: center; }
-  .multi-display {
-    text-align: center;
-  }
-  .multi-num {
-    font-size: clamp(140px, 20vw, 300px);
-    font-weight: 900;
-    line-height: 0.9;
-    background: linear-gradient(180deg, #fff2b0, #f5b040 45%, #7a4210);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-stroke: 1.5px #2a1500;
-    filter: drop-shadow(0 4px 0 #2a1500) drop-shadow(0 0 30px rgba(245,176,64,0.6));
-  }
-  .multi-sub {
-    font-size: 14px;
-    color: #f5b040;
-    letter-spacing: 6px;
-    font-weight: 800;
-    margin-top: 8px;
-    text-shadow: 0 0 10px rgba(245,176,64,0.5);
-  }
-  .ping {
-    font-size: 22px;
-    color: #ffde6b;
-    font-weight: 800;
-    position: absolute;
-    text-shadow: 0 0 8px rgba(255,222,107,0.6);
-    animation: floatUp 2.4s ease-out infinite;
-    opacity: 0;
-  }
-  @keyframes floatUp {
-    0% { opacity: 0; transform: translateY(0); }
-    15% { opacity: 1; }
-    100% { opacity: 0; transform: translateY(-60px); }
+    max-width: 26ch;
   }
 
   /* Demo slide */
-  .demo {
-    display: flex; align-items: center; justify-content: space-around; gap: 40px;
-    height: 100%;
+  .demo-wrap {
+    display: flex; align-items: center; justify-content: center; gap: 60px;
+    flex: 1;
+    margin-top: 20px;
   }
-  .demo .phone {
+  .phone {
     flex: 0 0 auto;
     width: 320px; height: 640px;
     background: #000;
     border-radius: 40px;
-    border: 8px solid #222;
+    border: 8px solid #1e1e22;
     box-shadow:
-      0 0 0 3px #444,
-      0 20px 60px rgba(0,0,0,0.7),
+      0 0 0 2px #3a3a40,
+      0 22px 60px rgba(0,0,0,0.75),
       inset 0 0 12px rgba(0,0,0,0.9);
     overflow: hidden;
     position: relative;
   }
-  .demo .phone iframe {
-    width: 100%; height: 100%;
-    border: 0;
-    display: block;
-  }
-  .demo .qr-block {
+  .phone iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .qr-block {
     text-align: center;
     background: rgba(0,0,0,0.35);
     border-radius: 18px;
     padding: 28px 32px;
     border: 1px solid rgba(255,255,255,0.1);
   }
-  .demo .qr-block canvas, .demo .qr-block img {
+  .qr-block canvas, .qr-block img {
     display: block;
     border-radius: 8px;
     background: #fff;
-    padding: 8px;
+    padding: 10px;
   }
-  .demo .qr-caption {
+  .qr-caption {
     color: #f5b040;
     font-size: 12px;
     letter-spacing: 3px;
@@ -245,137 +174,50 @@
     text-transform: uppercase;
     font-weight: 800;
   }
-  .demo .qr-url {
+  .qr-url {
     color: #fff;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     margin-top: 6px;
-    letter-spacing: 0.5px;
   }
 
-  /* Score slide */
-  .score-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 8px;
-  }
-  .score-card {
-    background: linear-gradient(180deg, rgba(35,5,30,0.55), rgba(20,3,20,0.7));
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 22px 24px;
-    text-align: left;
-  }
-  .score-card .num {
-    font-size: 64px;
-    font-weight: 900;
-    color: #f5b040;
-    line-height: 1;
-    margin-top: 8px;
-  }
-  .score-card .num small { color: rgba(255,255,255,0.5); font-weight: 600; font-size: 22px; }
-  .score-card .note { color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px; }
-  .bonuses {
+  /* Reskin slide */
+  .reskin-images {
+    display: flex; flex-direction: column; gap: 14px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
     margin-top: 20px;
-    background: rgba(245,176,64,0.08);
-    border: 1px solid rgba(245,176,64,0.35);
-    border-radius: 14px;
-    padding: 18px 24px;
-    display: flex; align-items: center; gap: 20px;
-    flex-wrap: wrap;
   }
-  .bonuses .bonus-label {
-    color: #f5b040;
-    font-size: 12px;
-    letter-spacing: 2.5px;
-    font-weight: 800;
-    text-transform: uppercase;
-  }
-  .bonuses .pill {
-    background: rgba(245,176,64,0.15);
-    color: #ffd070;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-    border: 1px solid rgba(245,176,64,0.3);
-  }
-  .total-row {
-    margin-top: 26px;
-    display: flex; align-items: baseline; gap: 20px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-  .total-row .lbl { color: rgba(255,255,255,0.6); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
-  .total-row .val { font-size: 40px; font-weight: 900; color: #f5b040; }
-  .total-row .max { color: rgba(255,255,255,0.5); font-size: 22px; }
-  .total-row .ctx { color: rgba(255,255,255,0.65); font-size: 14px; margin-left: auto; }
-
-  /* Ask slide */
-  .quote {
-    max-width: 22ch;
-  }
-  .quote .mark {
-    font-size: 64px;
-    color: #f5b040;
-    line-height: 1;
-    margin-bottom: 16px;
-    font-family: Georgia, serif;
-  }
-  .quote .body {
-    font-size: clamp(42px, 4.4vw, 62px);
-    font-weight: 800;
-    line-height: 1.1;
-    color: #fff;
-    letter-spacing: -0.015em;
-  }
-  .quote .body em { color: #f5b040; font-style: normal; }
-  .quote .attrib {
-    margin-top: 24px;
-    color: rgba(255,255,255,0.65);
-    font-size: 12px;
-    letter-spacing: 4px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .quote .attrib::before {
-    content: '── ';
+  .reskin-images img {
+    width: 100%;
+    max-width: 900px;
+    max-height: 32vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
   }
 
-  /* Round-length slide */
-  .round-stack {
-    display: flex; align-items: center; gap: 60px;
-    margin-top: 24px;
+  /* Close slide */
+  .close {
+    justify-content: center;
+    align-items: flex-start;
   }
-  .round-big {
-    font-size: clamp(140px, 18vw, 260px);
+  .close .big {
+    font-size: clamp(60px, 8vw, 128px);
     font-weight: 900;
-    line-height: 0.9;
-    color: #f5b040;
-    letter-spacing: -0.03em;
-    filter: drop-shadow(0 4px 0 #2a1500);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: #fff;
   }
-  .round-big small { color: rgba(255,255,255,0.6); font-size: 28px; font-weight: 600; }
-  .round-list { flex: 1; }
-  .round-item {
-    display: flex; align-items: baseline; gap: 24px;
-    padding: 10px 0;
-    border-bottom: 1px dashed rgba(255,255,255,0.15);
-  }
-  .round-item:last-child { border-bottom: none; }
-  .round-item .t {
-    font-size: 24px;
-    font-weight: 800;
-    color: #f5b040;
-    min-width: 80px;
-  }
-  .round-item .l {
-    font-size: 17px;
-    color: rgba(255,255,255,0.9);
+  .close .big em { color: #f5b040; font-style: normal; }
+  .close .under {
+    margin-top: 32px;
+    font-size: clamp(18px, 1.4vw, 22px);
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 2px;
   }
 
-  /* Nav hint */
   .nav-hint {
     position: fixed; bottom: 12px; right: 16px;
     color: rgba(255,255,255,0.3);
@@ -385,12 +227,9 @@
     text-transform: uppercase;
   }
 
-  /* Responsive-ish for smaller displays */
   @media (max-width: 900px) {
-    .cards.c3 { grid-template-columns: 1fr; }
-    .cards.c4 { grid-template-columns: 1fr 1fr; }
-    .moment, .demo { flex-direction: column; gap: 24px; }
-    .demo .phone { width: 280px; height: 560px; }
+    .demo-wrap { flex-direction: column; gap: 24px; }
+    .phone { width: 260px; height: 520px; }
   }
 </style>
 </head>
@@ -398,179 +237,60 @@
 <div class="progress" id="progress"></div>
 <div class="deck" id="deck">
 
-  <!-- 1. COVER -->
-  <section class="slide">
+  <!-- 1. TITLE -->
+  <section class="slide cover">
     <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="cover">
-      <div class="eyebrow">GAME PITCH · A RE-PITCH</div>
-      <h1>Pinball <span class="accent">22,000</span><span class="period">.</span></h1>
-      <div class="tag">A pinball table with a live multiplier. Every ping counts.</div>
-    </div>
+    <div class="eyebrow">GAME PITCH</div>
+    <h1>Pinball <span class="accent">22,000</span><span class="period">.</span></h1>
+    <div class="tag">A pinball table with a live multiplier that starts at zero.</div>
   </section>
 
-  <!-- 2. THE HOOK -->
+  <!-- 2. UPHILL BATTLE -->
   <section class="slide">
     <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="eyebrow">ONE LINE</div>
-    <h2>Crash tension inside a pinball you already know<span class="period">.</span></h2>
-    <div class="lead">
-      Launch the ball. A central multiplier ticks up from <b>0×</b> with every bumper it hits. It lands in <b>bust</b>, <b>×1</b>, or <b>×10</b>. That's the whole game.
-    </div>
+    <div class="eyebrow">UPHILL BATTLE</div>
+    <h2>I know how this sounds<span class="period">.</span></h2>
+    <ul class="points">
+      <li>Daniel P pitched <b>plinko</b> last year</li>
+      <li>We've done a few plinko games before</li>
+      <li>Plinko doesn't travel well outside <em>Asia</em>, and we're not there</li>
+    </ul>
+    <div class="footline">Bear with me.</div>
   </section>
 
-  <!-- 3. THE MECHANIC -->
+  <!-- 3. WHY PINBALL -->
   <section class="slide">
     <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="eyebrow">THE MECHANIC</div>
-    <h2>Launch. Tick. Drain<span class="period">.</span></h2>
-    <div class="cards c3">
-      <div class="card">
-        <div class="card-label">1 · LAUNCH</div>
-        <div class="card-body">
-          Tap the plunger. Ball drops into the top of the playfield with a small random horizontal nudge.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">2 · TICK</div>
-        <div class="card-body">
-          Every peg adds <b>+0.04×</b>. Every pop-bumper adds <b>+0.22×</b>. The number in the middle grows in front of you.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">3 · DRAIN</div>
-        <div class="card-body">
-          Five slots at the bottom: <b>BUST · ×1 · ×10 · ×1 · BUST</b>. Payout = bet × slot × multiplier. Bust means zero.
-        </div>
-      </div>
-    </div>
+    <div class="eyebrow">WHY PINBALL</div>
+    <h2>Nostalgic. Flashy. Already casino<span class="period">.</span></h2>
+    <ul class="points">
+      <li>People love the look of a pinball machine</li>
+      <li>But <b>no flippers</b>, and <b>no long rounds</b>. That won't work</li>
+      <li>Original Supershoot: rounds too long. A few similar games do OK on Stake</li>
+      <li>I've not seen a pinball casino game anywhere. So here's my take</li>
+    </ul>
   </section>
 
-  <!-- 4. THE MOMENT -->
+  <!-- 4. MY TAKE -->
   <section class="slide">
     <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="moment">
-      <div class="left">
-        <div class="eyebrow">THE MOMENT</div>
-        <h2>The number grows while you watch<span class="period">.</span></h2>
-        <div class="lead">
-          Slots reveal outcomes. Crash games reveal outcomes. Here the outcome is <b>visible and climbing</b> for the entire round. You cheer for each ping.
-        </div>
-      </div>
-      <div class="right" style="position: relative;">
-        <div class="multi-display">
-          <div class="multi-num">12.60<span style="font-size: 0.6em;">×</span></div>
-          <div class="multi-sub">MULTIPLIER</div>
-        </div>
-        <div class="ping" style="left: 15%; top: 30%; animation-delay: 0s;">+0.22×</div>
-        <div class="ping" style="left: 65%; top: 25%; animation-delay: 0.6s;">+0.04×</div>
-        <div class="ping" style="left: 35%; top: 55%; animation-delay: 1.2s;">+0.22×</div>
-        <div class="ping" style="left: 75%; top: 60%; animation-delay: 1.8s;">+0.04×</div>
-      </div>
-    </div>
+    <div class="eyebrow">MY TAKE</div>
+    <h2>It fixes Supershoot<span class="period">.</span></h2>
+    <ul class="points">
+      <li><b>Same math as Supershoot</b>, dressed as a pinball table</li>
+      <li>Rounds are short. Plinko feel, but way more bouncing</li>
+      <li>Multiplier can go anywhere, and it can go very high</li>
+      <li>You can walk away with <em>0</em>. Supershoot never had that</li>
+      <li>Near-win excitement even when you lose</li>
+    </ul>
+    <div class="footline">Instantly recognisable as pinball.</div>
   </section>
 
-  <!-- 5. WHY IT FITS SOLIDICON -->
-  <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="eyebrow">WHERE WE PLAY</div>
-    <h2>Fits the shelf next to Navigator<span class="period">.</span></h2>
-    <div class="cards c3">
-      <div class="card">
-        <div class="card-label">AFRICA MOBILE</div>
-        <div class="card-body">
-          Pinball is universally recognised. No cultural translation, no explainer needed. Reads instantly on a low-end phone.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">MOMENTUM DNA</div>
-        <div class="card-body">
-          Same "watch it climb" tension as crash and Navigator. Operators already know how to merchandise this.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">SHORT ROUNDS</div>
-        <div class="card-body">
-          Launch to drain in <b>~10 seconds</b>. Sits inside the cabinet rhythm operators already run.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6. WHAT'S UNIQUE -->
-  <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="eyebrow">UNIQUENESS</div>
-    <h2>New shape, familiar math<span class="period">.</span></h2>
-    <div class="cards c3">
-      <div class="card">
-        <div class="card-label">FIRST PINBALL</div>
-        <div class="card-body">
-          Nothing in the catalogue looks or moves like this. Instant "the new one from Solidicon."
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">LIVE-TICKING MOMENT</div>
-        <div class="card-body">
-          Most casino outcomes reveal at the end. This one climbs during the round. Players cheer each peg.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">BUST INSIDE A CLASSIC</div>
-        <div class="card-body">
-          Crash-game risk under a pinball table. Familiar shape, sharper edge.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7. DEV EASE -->
-  <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="eyebrow">DEVELOPMENT</div>
-    <h2>Prototype already runs on your phone<span class="period">.</span></h2>
-    <div class="cards c3">
-      <div class="card">
-        <div class="card-label">EXISTING MATH</div>
-        <div class="card-body">
-          Single random outcome per launch. Deterministic seed replay. Fits the crash-family engine we already run.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">RESKIN READY</div>
-        <div class="card-body">
-          Same physics, new art. Space, savanna, ocean, football. The board pieces are all reusable art units.
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">2D CANVAS</div>
-        <div class="card-body">
-          No 3D pipeline. Runs at 60fps in a mobile browser. Prototype is <b>~2,000 lines</b> of HTML/JS and hosted right now.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 8. ROUND LENGTH -->
-  <section class="slide">
-    <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="eyebrow">ROUND LENGTH</div>
-    <h2>Ten seconds, cover-to-cover<span class="period">.</span></h2>
-    <div class="round-stack">
-      <div class="round-big">~10<small>s</small></div>
-      <div class="round-list">
-        <div class="round-item"><div class="t">0.5s</div><div class="l">Plunger launch</div></div>
-        <div class="round-item"><div class="t">6–9s</div><div class="l">Ball bounces, multiplier climbs</div></div>
-        <div class="round-item"><div class="t">1s</div><div class="l">Ball lands in a slot</div></div>
-        <div class="round-item"><div class="t">2s</div><div class="l">Win animation + auto-reset</div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 9. PLAY IT NOW -->
+  <!-- 5. DEMO -->
   <section class="slide">
     <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
     <div class="eyebrow">PLAY IT NOW</div>
-    <div class="demo">
+    <div class="demo-wrap">
       <div class="phone">
         <iframe src="https://solidicon-ab.github.io/pinball/" title="Pinball 22,000 prototype" loading="lazy"></iframe>
       </div>
@@ -582,47 +302,22 @@
     </div>
   </section>
 
-  <!-- 10. SELF SCORED -->
+  <!-- 6. RESKIN -->
   <section class="slide">
     <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="eyebrow">HONEST SELF-SCORE</div>
-    <h2>Where I think it lands<span class="period">.</span></h2>
-    <div class="score-grid">
-      <div class="score-card">
-        <div class="card-label">BUSINESS VIABILITY</div>
-        <div class="num">4<small>/5</small></div>
-        <div class="note">Universally recognisable, sits next to Navigator, mobile-first shape.</div>
-      </div>
-      <div class="score-card">
-        <div class="card-label">UNIQUENESS</div>
-        <div class="num">4<small>/5</small></div>
-        <div class="note">No pinball in the catalogue. Live-ticking multiplier is a real "moment."</div>
-      </div>
-      <div class="score-card">
-        <div class="card-label">DEVELOPMENT EASE</div>
-        <div class="num">4<small>/5</small></div>
-        <div class="note">Prototype runs today. 2D canvas, existing math, reskinnable.</div>
-      </div>
-    </div>
-    <div class="bonuses">
-      <div class="bonus-label">BONUSES</div>
-      <div class="pill">Existing math · +2</div>
-      <div class="pill">Short rounds · +2</div>
+    <div class="eyebrow">RESKIN POSSIBILITIES</div>
+    <h2 style="margin-bottom: 24px;">Any theme. Any brand<span class="period">.</span></h2>
+    <div class="reskin-images">
+      <img src="deck-images/cabinets.png" alt="Navigator, Swiminator, Chicken Runner branded pinball cabinets">
+      <img src="deck-images/playfields.png" alt="Space Cadet, Savanna, Deep Dive themed pinball playfields">
     </div>
   </section>
 
-  <!-- 11. THE ASK -->
-  <section class="slide">
+  <!-- 7. CLOSE -->
+  <section class="slide close">
     <div class="brand">SOLIDICON · <b>PITCH DAY</b> · MÁLAGA</div>
-    <div class="quote" style="margin-top: 12vh;">
-      <div class="mark">&ldquo;</div>
-      <div class="body">Put it on the <em>roadmap</em>.</div>
-      <div class="attrib">THE ASK</div>
-    </div>
-    <div style="position: absolute; bottom: 10vh; left: 6vw; right: 6vw; display: flex; justify-content: space-between; align-items: baseline; color: rgba(255,255,255,0.55); font-size: 14px; letter-spacing: 2px;">
-      <div>PROTOTYPE · <b style="color:#f5b040;">solidicon-ab.github.io/pinball</b></div>
-      <div>THANK YOU · QUESTIONS</div>
-    </div>
+    <div class="big">And that's my <em>pitch</em>.</div>
+    <div class="under">solidicon-ab.github.io/pinball</div>
   </section>
 
 </div>
@@ -656,31 +351,28 @@
       else document.exitFullscreen();
     }
   });
-  // Click right half = next, left third = prev. Keeps the demo iframe interactive
-  // by ignoring clicks inside it.
+  // Right half advances, left third goes back. Clicks inside the demo iframe or
+  // QR block are ignored so the prototype stays playable during the pitch.
   document.addEventListener('click', e => {
     if (e.target.closest('iframe, a, button, .qr-block')) return;
     if (e.clientX > window.innerWidth * 0.55) next(); else if (e.clientX < window.innerWidth * 0.33) prev();
   });
 
-  // Restore slide from URL hash
   const initial = parseInt(location.hash.slice(1), 10);
   if (!isNaN(initial) && initial >= 1 && initial <= total) go(initial - 1);
   else go(0);
 
-  // Render the QR code
   if (window.QRCode) {
     QRCode.toCanvas(document.getElementById('qr'), 'https://solidicon-ab.github.io/pinball/', {
-      width: 280,
+      width: 260,
       margin: 1,
       color: { dark: '#1a0220', light: '#ffffff' },
       errorCorrectionLevel: 'M'
     }, err => {
       if (err) {
-        // Fallback to hosted QR generator
         const img = document.createElement('img');
-        img.src = 'https://api.qrserver.com/v1/create-qr-code/?data=https%3A%2F%2Fsolidicon-ab.github.io%2Fpinball%2F&size=280x280&margin=1';
-        img.width = 280; img.height = 280;
+        img.src = 'https://api.qrserver.com/v1/create-qr-code/?data=https%3A%2F%2Fsolidicon-ab.github.io%2Fpinball%2F&size=260x260&margin=1';
+        img.width = 260; img.height = 260;
         document.getElementById('qr').replaceWith(img);
       }
     });
